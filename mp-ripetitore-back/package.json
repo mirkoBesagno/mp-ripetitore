@@ -1,0 +1,31 @@
+{
+  "name": "mp-ripetitore-back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "description": "",
+  "dependencies": {
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5",
+    "@drdgvhbh/postgres-error-codes": "0.0.6",
+    "@types/prompts": "^2.0.12",
+    "class-validator": "^0.13.1",
+    "lodash": "^4.17.21",
+    "lodash-decorators": "^6.0.1",
+    "pg": "^8.6.0",
+    "prompts": "^2.4.1",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.32",
+    "typeorm-pagination": "^2.0.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^16.4.3",
+    "tslib": "^2.3.0"
+  }
+}
