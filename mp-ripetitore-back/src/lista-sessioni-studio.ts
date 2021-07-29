@@ -8,6 +8,10 @@ import { mpClas } from "mpstation";
 import { getRepository } from "typeorm";
 import { ISessioneStudio, SessioneStudio } from "./sessione-studio";
 
+export interface IListaSessioniStudio{
+    
+}
+
 @mpClas({})
 export class ListaSessioniStudio extends Array<SessioneStudio> {
 

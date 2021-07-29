@@ -1,6 +1,41 @@
 <p>piano-studio works!</p>
 
+
 <div>
     <label for="inizioPianoStudio">Data inizio paino studio </label>
     <input type="date" name="" [value]="GetDataInizio()" (change)='SetDataInizio($event.srcElement.value)'>
+</div>
+
+<!-- qui andrebbe un tree view per visualizzare le sessioni nel loro complesso -->
+<div *ngFor="let item of listaSessioni; let i=index;">
+    <button title="clicca per selezionare la sessione" (click)="SelezionaSessioneStudio(item)">
+        ({{i}}) {{item.name}}
+    </button>
+</div>
+<!-- sotto ci antrebbero due viste alternabili con un if, in alternativa un doppio tab. -->
+<!-- in una di queste ci andrebbe una nuova sessione  -->
+<!-- nell'altra ci andrebbe la sessione selezionata -->
+<div class="tab">
+    <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'SessioneSelezionata')">Sessione
+        selezionata</button>
+    <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'NuovaSessione')">Nuova sessione</button>
+</div>
+
+<div id="NuovaSessione" class="tabcontent">
+    <app-sessione-studio id="nuovoOggetto" (Setta)='nuovaSessione'></app-sessione-studio>
+    <br>
+    <button (click)="AggiungiSessione($event)">Aggiungi Sessione</button>
+    <button (click)="Prevista($event)">Pre vista</button>
+    <br>
+    <label for="">Lista possibili pomodori</label>
+    <select name="cars" id="cars" (change)="SelezionaPomodoro($event)">
+        <option value="I">I</option>
+        <option value="II">II</option>
+        <option value="III">III</option>
+    </select>
+
+</div>
+
+<div id="SessioneSelezionata" class="tabcontent">
+    <app-sessione-studio id="sessioneSelezionata" (Setta)='sessioneSelezionata'></app-sessione-studio>
 </div>

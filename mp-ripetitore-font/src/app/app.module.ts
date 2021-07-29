@@ -5,12 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PianoStudioComponent } from './piano-studio/piano-studio.component';
 import { SessioneStudioComponent } from './sessione-studio/sessione-studio.component';
+import { RipetizioneComponent } from './ripetizione/ripetizione.component';
+import { PomodoroComponent } from './pomodoro/pomodoro.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PianoStudioComponent,
-    SessioneStudioComponent
+    SessioneStudioComponent,
+    RipetizioneComponent,
+    PomodoroComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 
-import { PrimaryGeneratedColumn, Column } from "typeorm";
+import { PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
 import { mpClas } from "mpstation";
 import { ValidateIf } from "class-validator";
 import { ListaSessioniStudio } from "./lista-sessioni-studio";
@@ -19,7 +19,13 @@ export class PianoStudio implements IPianoStudio {
     @ValidateIf(item => item.dataInizio > new Date(Date.now()) ? true : false)
     dataInizio: Date;
 
-    listaSessioniStudioAperte: ListaSessioniStudio;
+    
+    @OneToOne(type => ListaSessioniStudio, { nullable: false, eager: true, cascade: true, onDelete: 'CASCADE' })
+    @JoinColumn({ name: "fkCredenzialiLogin" })
+    listaSessioniStudio: ListaSessioniStudio;
+
+    listaParoleChiavi: string[];
+
     constructor() {
         this.dataInizio = new Date(Date.now());
     }
