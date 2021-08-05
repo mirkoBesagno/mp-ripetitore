@@ -7,35 +7,66 @@
 </div>
 
 <!-- qui andrebbe un tree view per visualizzare le sessioni nel loro complesso -->
-<div *ngFor="let item of listaSessioni; let i=index;">
+<!-- <div *ngFor="let item of listaSessioni; let i=index;">
     <button title="clicca per selezionare la sessione" (click)="SelezionaSessioneStudio(item)">
-        ({{i}}) {{item.name}}
+        ({{i}}) | data inizio : {{item.dataInizio}} | pomodoro selezionato :
+        {{StrutturaPomodotoToString(item.strutturaPomodoro)}}
     </button>
-</div>
-<!-- sotto ci antrebbero due viste alternabili con un if, in alternativa un doppio tab. -->
-<!-- in una di queste ci andrebbe una nuova sessione  -->
-<!-- nell'altra ci andrebbe la sessione selezionata -->
+</div> -->
+
+<ul id="myUL">
+    <li *ngFor="let sessione of listaSessioniStudio; let i=index;" (click)="onClickMenu($event)">
+        <!-- <samp>{{sessione.titolo}} : {{sessione.dataInizio}}</samp> -->
+        <button title="clicca per selezionare la sessione" (click)="SelezionaSessioneStudio(sessione)">
+            {{sessione.titolo}} : {{sessione.dataInizio | date:'M/d/yy, h:mm a z'}}
+        </button>
+        <ul class="nested">
+            <!-- *ngFor="let item of sessione; let i=index;" -->
+            <li>
+                <samp>{{sessione.dataInizio | date:'M/d/yy, h:mm a z'}} : {{sessione.dataFine | date:'M/d/yy, h:mm a
+                    z'}}</samp>
+            </li>
+            <li>
+                <samp>{{StrutturaPomodotoToString(sessione.strutturaPomodoro)}}</samp>
+            </li>
+            <li>
+                <samp>{{sessione.commentoConciso}}</samp>
+            </li>
+        </ul>
+    </li>
+</ul>
+
 <div class="tab">
-    <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'SessioneSelezionata')">Sessione
-        selezionata</button>
-    <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'NuovaSessione')">Nuova sessione</button>
+    <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'SessioneSelezionata')">
+        Sessione selezionata
+    </button>
+    <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'NuovaSessione')">
+        Nuova sessione
+    </button>
 </div>
 
 <div id="NuovaSessione" class="tabcontent">
-    <app-sessione-studio id="nuovoOggetto" (Setta)='nuovaSessione'></app-sessione-studio>
-    <br>
-    <button (click)="AggiungiSessione($event)">Aggiungi Sessione</button>
-    <button (click)="Prevista($event)">Pre vista</button>
-    <br>
     <label for="">Lista possibili pomodori</label>
-    <select name="cars" id="cars" (change)="SelezionaPomodoro($event)">
-        <option value="I">I</option>
-        <option value="II">II</option>
-        <option value="III">III</option>
+    <select name="cars" id="pomodoroselezionato" (change)="SelezionaPomodoro($event)">
+        <option value="" selected disabled hidden>...</option>
+        <option value="I">I (20 - 2 * 2 - 20)</option>
+        <option value="II">II (35 - 2 * 2 - 20)</option>
+        <option value="III">III (40 - 2 * 2 - 20)</option>
     </select>
-
+    <button (click)="AggiungiSessione($event)">Aggiungi Sessione</button>
 </div>
 
 <div id="SessioneSelezionata" class="tabcontent">
-    <app-sessione-studio id="sessioneSelezionata" (Setta)='sessioneSelezionata'></app-sessione-studio>
+    ---- **** !!!! **** ----
+    <div *ngIf='sessioneSelezionata != undefined'>
+        <app-sessione-studio id="sessioneSelezionata" [Setta]='sessioneSelezionata'
+            (onFineSessione)='FineSessione($event)'>
+        </app-sessione-studio>
+    </div>
+    ---- **** !!!! **** ----
 </div>
+
+<!-- <div *ngFor="let item of listaSessioni; let i=index;">
+    <label for="">({{i}})</label>    
+    <app-sessione-studio id="sessioneSelezionata" [Setta]='item'></app-sessione-studio>
+</div> -->

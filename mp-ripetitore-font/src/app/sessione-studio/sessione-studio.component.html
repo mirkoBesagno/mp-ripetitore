@@ -3,16 +3,28 @@
 <p>{{dataInizio}}</p>
 
 <label for="">Tipo pomodoro selezionato</label>
-<input type="text" [value]='strutturaPomodoro' >
+<input type="text" [value]='StrutturaPomodotoToString(strutturaPomodoro)'>
 <!-- un riquadro con la visualizzazione dei pomodori del piano selezionato -->
 <p>visualizzazione dei pomodori previsti</p>
 <!-- due pulsanti uno start uno stop -->
 <label for="">Timer</label>
-<input type="date">
-<button>start</button>
-<button>stop</button>
-<!-- il cronometro che scandisce il tempo -->
-<!-- a lui è legato una ripetizione la prima -->
-<!-- infine abbiamo il tempo totale per un pomodoro -->
-<!-- e qui il tempo stimato -->
-<!-- qui le due componenti tempo pomodoro, tempo ripetizione-->
+<input type="time" [value]="timer">
+<button (click)='StartTimer()' [disabled]='statoTime == true'>start</button><!-- [disabled]='GetIsDisability(true)' -->
+<button (click)='StopTimer()' [disabled]='statoTime == false' >stop</button>
+{{count}}:{{strutturaPomodoro.count}}
+
+<label for="">struttura pomodoro</label>
+<input type="text" name="" id="" [value]="GetStrutturaPomodoroString()">
+
+<div>
+    <label for="">Titolo </label>
+    <input type="text" name="" id="" [value]='titolo' [disabled]='terminato == true'
+        (change)="$event.srcElment.value != undefined ? titolo = $event.srcElment.value : titolo = titolo">
+</div>
+
+<div>
+    <label for="">Commento conciso</label>
+    <br>
+    <textarea name="" id="" cols="30" rows="10" [value]='commentoConciso' [disabled]='terminato == true'
+        (change)="$event.srcElment.value != undefined ? commentoConciso = $event.srcElment.value : commentoConciso = commentoConciso"></textarea>
+</div>

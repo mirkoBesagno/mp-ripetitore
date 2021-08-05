@@ -5,8 +5,9 @@ import { PrimaryGeneratedColumn } from "typeorm"; */
 
 
 import { mpClas } from "mpstation";
-import { IPianoStudio, PianoStudio } from "./piano-studio";
+import { PianoStudio } from "./piano-studio";
 import { getRepository } from "typeorm";
+import { IPianoStudio } from "../../mp-classi/utility";
 
 @mpClas({})
 export class ListaPianiStudio extends Array<PianoStudio> {

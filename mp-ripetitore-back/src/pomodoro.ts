@@ -1,8 +1,7 @@
 
-import { PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, Timestamp } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Timestamp } from "typeorm";
 import { mpClas } from "mpstation";
 import { ValidateIf } from "class-validator";
-import { ListaSessioniStudio } from "./lista-sessioni-studio";
 
 export interface IPomodoro {
     durataStudio: Date;

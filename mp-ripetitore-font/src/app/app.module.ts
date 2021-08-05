@@ -8,6 +8,10 @@ import { SessioneStudioComponent } from './sessione-studio/sessione-studio.compo
 import { RipetizioneComponent } from './ripetizione/ripetizione.component';
 import { PomodoroComponent } from './pomodoro/pomodoro.component';
 
+/* import { TreeviewModule } from 'ngx-treeview';
+import { TreeModule } from '@circlon/angular-tree-component';
+ */
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,9 +22,13 @@ import { PomodoroComponent } from './pomodoro/pomodoro.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    /* TreeviewModule.forRoot(), // fa un po' schifo!!! 
+    TreeModule  // fa un po' schifo!!! 
+     */
   ],
-  providers: [],
+  providers: [
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
