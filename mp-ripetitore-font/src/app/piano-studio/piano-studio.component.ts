@@ -1,7 +1,7 @@
 import { Component, Directive, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 import { ISessioneStudio, StrutturaPomodori, IPianoStudio, ITimer } from '../../../../mp-classi/utility';
-import { formataDate, IInterazioneVettoriale, ListaSessioniStudio } from '../utility';
+import { formataDate, IInterazioneVettoriale, ListaSessioniStudio, PianoStudio } from '../utility';
 
 
 @Component({
@@ -171,7 +171,7 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
   IntercettaFineTimer(item: ITimer) {
     this.dataFine = new Date();
     this.timerInterno = item;
-    this.onFineSessione.emit(this);
+    this.onFineSessione.emit(new PianoStudio(this));
   }
 
   @Output() onFineSessione = new EventEmitter<IPianoStudio>();
@@ -183,7 +183,7 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     console.log('sono in input !!!');
     if (v) {
       if (this.settato) {
-        this.onModificaPianoStudio.emit(this);
+        this.onModificaPianoStudio.emit(new PianoStudio(this));
         setTimeout((item: IPianoStudio) => {
           this.SettaPiano(item);
         }, 100, v);

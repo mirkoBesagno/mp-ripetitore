@@ -12,10 +12,20 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
 
   listaPianiStudio: ListaPianiStudio = new ListaPianiStudio();
 
+  public get ListaPianiStudio(): ListaPianiStudio {
+    return this.listaPianiStudio;
+  }
+
   nuovoElemento: IPianoStudio = undefined;
   elementoSelezionato: IPianoStudio = undefined;
   elementoTmp: IPianoStudio = undefined;
   indice = 0;
+  indiceTmp = 0;
+  public set Indice(v: number) {
+    this.indiceTmp = this.indice;
+    this.indice = v;
+  }
+
   switch = false;
   constructor() {
     try {
@@ -180,6 +190,7 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
   }
 
   FineSessione(item: IPianoStudio) {
+    console.log('fine sessione');
     console.log(item);
     /* this.elementoSelezionato.dataFine = item.dataFine;
     this.elementoSelezionato.titolo = item.titolo;
@@ -189,15 +200,17 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
     this.elementoSelezionato = undefined;
   }
   ModificaSessione(item: IPianoStudio) {
+    console.log('modifica sessione');
     console.log(item);
     /* this.elementoSelezionato.dataFine = item.dataFine;
     this.elementoSelezionato.titolo = item.titolo;
     this.elementoSelezionato.commentoConciso = item.commentoConciso; */
     //this.elementoSelezionato = item;
-    this.listaPianiStudio[this.indice] = item;
-    this.elementoSelezionato = undefined;
-  }
+    this.listaPianiStudio[this.indiceTmp] = item;
+    //this.elementoSelezionato = undefined;
+    console.log('dhdjdj');
 
+  }
 
   public SetDataInizio(v: any) {
     this.nuovoElemento.dataInizio = new Date(Date.parse(v));

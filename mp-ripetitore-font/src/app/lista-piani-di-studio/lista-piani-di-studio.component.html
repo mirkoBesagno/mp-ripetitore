@@ -5,9 +5,9 @@ background-color: aqua; display: inline-block;
 ;">
     <div>
         <ul id="myUL" style="font-size: small;">
-            <li *ngFor="let piano of listaPianiStudio; let i=index;" (click)="onClickMenu($event)">
+            <li *ngFor="let piano of ListaPianiStudio; let i=index;" (click)="onClickMenu($event)">
                 <!-- <samp>{{piano.titolo}} : {{piano.dataInizio}}</samp> -->
-                <button title="clicca per selezionare il piano" (click)="SelezionaPianoStudio(piano); indice=i;"
+                <button title="clicca per selezionare il piano" (click)="SelezionaPianoStudio(piano); Indice=i;"
                     [ngbPopover]="popVistaTemporaneaPianoStudioContent" [popoverTitle]="popVistaTemporaneaPianoStudioTitle" triggers="mouseenter:mouseleave"
                     placement="right" (mouseenter)="elementoTmp= piano">
                     {{piano.titoloOpera}} : {{piano.dataInizio | date:'M/d/yy, h:mm a z'}}
@@ -29,7 +29,6 @@ background-color: aqua; display: inline-block;
                             <label for="inizioPianoStudio">Data inizio paino studio </label>
                             <input type="date" name="" [value]="GetDataInizio()" (change)='SetDataInizio($event.srcElement.value)'>
                         </div>
-                        
                         <div>
                             <label for="titoloOpera">Titolo opera </label>
                             <input type="text" name="" [value]="nuovoElemento.titoloOpera" (change)='nuovoElemento.titoloOpera = $event.srcElement.value'>
@@ -40,7 +39,6 @@ background-color: aqua; display: inline-block;
                 </button>
             </li>
         </ul>
-
     </div>
 </div>
 <div style=" display: inline-block">
@@ -52,7 +50,7 @@ background-color: aqua; display: inline-block;
         Piano selezionato:
     </label>
     <app-piano-studio [Setta]='elementoSelezionato' (onFineSessione)='FineSessione($event)'
-    (onModificaSessione)='ModificaSessione($event)'>
+    (onModificaPianoStudio)='ModificaSessione($event)'>
     </app-piano-studio>
 </div>
 
