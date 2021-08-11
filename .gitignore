@@ -1,0 +1,11 @@
+/back-end/node_modules/
+/back-end/javascript/node_modules/
+/front-end/medico-app/node_modules/
+node_modules
+build
+/new-back-end/build/
+/back-end/test
+.vscode
+/back-end/log
+*.log
+*.heapsnapshot
