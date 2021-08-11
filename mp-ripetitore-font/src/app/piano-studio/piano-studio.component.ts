@@ -1,14 +1,24 @@
 import { Component, Directive, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
-import { ISessioneStudio, StrutturaPomodori, IPianoStudio, ListaSessioniStudio } from '../../../../mp-classi/utility';
+import { ISessioneStudio, StrutturaPomodori, IPianoStudio, ITimer } from '../../../../mp-classi/utility';
+import { formataDate, IInterazioneVettoriale, ListaSessioniStudio } from '../utility';
+
 
 @Component({
   selector: 'app-piano-studio',
   templateUrl: './piano-studio.component.html',
   styleUrls: ['./piano-studio.component.css']
 })
-export class PianoStudioComponent /* extends ListaSessioniStudio */ implements OnInit, IPianoStudio {
+export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneVettoriale<ISessioneStudio> {
 
+  timerInterno: ITimer = {
+    statoTimer: false,
+    timer: '00:00:00',
+    count: 0,
+    numeroCicli: -1,
+    dataInizio: new Date(),
+    terminato: false
+  };
 
   dataInizio: Date = new Date(Date.now());
 
@@ -16,77 +26,56 @@ export class PianoStudioComponent /* extends ListaSessioniStudio */ implements O
 
   listaParoleChiavi?: string[];
 
-  titoloOpera: string; //sarebbe piu corretto libro
+  titoloOpera: string = ''; //sarebbe piu corretto libro
+  public get TitoloOpera(): string {
+    return this.titoloOpera;
+  }
+  public set TitoloOpera(v: string) {
+    this.titoloOpera = v;
+  }
 
-  lunghezzaPagine: string;
+  titoloGenerale: string = '';
+  public set TitoloGenerale(v: string) {
+    this.titoloGenerale = v;
+  }
+  public get TitoloGenerale(): string {
+    return this.titoloGenerale;
+  }
 
   dataFine?: Date;
 
+  nuovoElemento: ISessioneStudio = undefined;
+  elementoSelezionato: ISessioneStudio = undefined;
+  indice = 0;
 
-
-  nuovaSessione: ISessioneStudio = undefined; //{ dataInizio: new Date(Date.now()), strutturaPomodoro: undefined };
-  sessioneSelezionata: ISessioneStudio = undefined//{ dataInizio: new Date(Date.now()), strutturaPomodoro: undefined };
+  settato = false;
 
   public SetDataInizio(v: any) {
     this.dataInizio = new Date(Date.parse(v));
   }
   public GetDataInizio(): string {
-    let tmp = formatDate(this.dataInizio.toDateString());
+    let tmp = formataDate(this.dataInizio.toDateString());
     return tmp;
   }
   constructor() {
     this.dataInizio = new Date();
-
-    this.listaSessioniStudio.AggiungiNuovoPiano(<ISessioneStudio>{
-      dataInizio: new Date(), strutturaPomodoro:
-        { tipologia: 'I', count: 2, struttura: [25, 5] },
-      dataFine: new Date(),
-      commentoConciso: '',
-      titolo: 'lettura coscienza di zeno',
-      statoTime: false, count: 2, terminato: true
-    });
-
-    this.listaSessioniStudio.AggiungiNuovoPiano(<ISessioneStudio>{
-      dataInizio: new Date(), strutturaPomodoro:
-        { tipologia: 'II', count: 4, struttura: [20, 5, 20, 5] },
-      dataFine: new Date(),
-      commentoConciso: '',
-      titolo: 'lettura il socrate',
-      statoTime: false, count: 4, terminato: true
-    });
-
-    this.listaSessioniStudio.AggiungiNuovoPiano(<ISessioneStudio>{
-      dataInizio: new Date(), strutturaPomodoro:
-        { tipologia: 'III', count: 4, struttura: [50, 10, 50, 10] },
-      dataFine: new Date(),
-      commentoConciso: '',
-      titolo: 'lettura il capitale',
-      statoTime: false, count: 2, terminato: true
-    });
-
-    this.listaSessioniStudio.AggiungiNuovoPiano(<ISessioneStudio>{
-      dataInizio: new Date(), strutturaPomodoro:
-        { tipologia: 'I', count: 2, struttura: [25, 5] },
-      dataFine: new Date(),
-      commentoConciso: '',
-      titolo: 'lettura teste tonde teste a punta',
-      statoTime: false, count: 2, terminato: true
-    });
   }
   ngOnInit(): void {
     this.dataInizio = new Date();
   }
   Prevista(item: any) {
-    const tmp = this.nuovaSessione;
-    this.nuovaSessione = undefined;
-    this.nuovaSessione = tmp;
+    const tmp = this.nuovoElemento;
+    this.nuovoElemento = undefined;
+    this.nuovoElemento = tmp;
   }
-  AggiungiSessione(item: ISessioneStudio) {
+  AggiungiSessione() {
     try {
-      this.listaSessioniStudio.AggiungiNuovoPiano(this.nuovaSessione);
-      this.nuovaSessione = <ISessioneStudio>{
+      this.listaSessioniStudio.AggiungiNuovoPiano(this.nuovoElemento);
+      this.nuovoElemento = <ISessioneStudio>{
         dataInizio: new Date(), strutturaPomodoro: undefined,
-        statoTime: false, count: 2, terminato: true
+        timerInterno: {
+          count: 0, numeroCicli: 0, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: false
+        }
       };
       (<any>document.getElementById('pomodoroselezionato')).selectedIndex = 0;
       return true;
@@ -96,26 +85,29 @@ export class PianoStudioComponent /* extends ListaSessioniStudio */ implements O
     }
   }
   SelezionaPomodoro(item: any) {
-    if (this.nuovaSessione == undefined) this.nuovaSessione = <ISessioneStudio>{
+    if (this.nuovoElemento == undefined) this.nuovoElemento = <ISessioneStudio>{
       dataInizio: new Date(), strutturaPomodoro: undefined,
-      statoTime: false, count: 2, terminato: true
+      timerInterno: {
+        count: 0, numeroCicli: 0, timer: undefined, statoTimer: false,
+        dataInizio: new Date(), terminato: false
+      }
     };
     switch (item.srcElement.value) {
       case 'I':
-        this.nuovaSessione.strutturaPomodoro = <StrutturaPomodori>{
+        this.nuovoElemento.strutturaPomodoro = <StrutturaPomodori>{
           tipologia: "I",
           struttura: [25, 5],
           count: 2
         };
         break;
       case 'II':
-        this.nuovaSessione.strutturaPomodoro = <StrutturaPomodori>{
+        this.nuovoElemento.strutturaPomodoro = <StrutturaPomodori>{
           tipologia: "II", struttura: [20, 5, 20, 5],
           count: 4
         };
         break;
       case 'III':
-        this.nuovaSessione.strutturaPomodoro = <StrutturaPomodori>{
+        this.nuovoElemento.strutturaPomodoro = <StrutturaPomodori>{
           tipologia: "III",
           struttura: [50, 10, 50, 10],
           count: 4
@@ -124,7 +116,7 @@ export class PianoStudioComponent /* extends ListaSessioniStudio */ implements O
       default:
         break;
     }
-
+    this.nuovoElemento.timerInterno.numeroCicli = this.nuovoElemento.strutturaPomodoro.count ?? 0;
   }
   SchegliNuovoSelezionata(evt, cityName) {
     var i, tabcontent, tablinks;
@@ -141,14 +133,7 @@ export class PianoStudioComponent /* extends ListaSessioniStudio */ implements O
   }
   SelezionaSessioneStudio(item: ISessioneStudio) {
     console.log('seleziono');
-    this.sessioneSelezionata = item;
-    /*  this.sessioneSelezionata = undefined;
-     setTimeout((tmp) => {
-       console.log('seleziono 2 :');
-       console.log(tmp);
-       this.sessioneSelezionata = tmp;
-       console.log(this.sessioneSelezionata);
-     }, 100, item); */
+    this.elementoSelezionato = item;
   }
   StrutturaPomodotoToString(item: StrutturaPomodori): string {
     if (item && 'tipologia' in item) {
@@ -170,28 +155,59 @@ export class PianoStudioComponent /* extends ListaSessioniStudio */ implements O
   }
   FineSessione(item: ISessioneStudio) {
     console.log(item);
-    this.sessioneSelezionata.dataFine = item.dataFine;
-    this.sessioneSelezionata.titolo = item.titolo;
-    this.sessioneSelezionata.commentoConciso = item.commentoConciso;
+    /* this.elementoSelezionato.dataFine = item.dataFine;
+    this.elementoSelezionato.titolo = item.titolo;
+    this.elementoSelezionato.commentoConciso = item.commentoConciso; */
+    //this.elementoSelezionato = item;
+    this.listaSessioniStudio[this.indice] = item;
+    this.elementoSelezionato = undefined;
   }
 
   onClickMenu(item: any) {
     /* item.querySelector(".nested").classList.toggle("active");
     item.toggle("caret-down"); */
   }
-}
 
+  IntercettaFineTimer(item: ITimer) {
+    this.dataFine = new Date();
+    this.timerInterno = item;
+    this.onFineSessione.emit(this);
+  }
 
-function formatDate(date) {
-  var d = new Date(date),
-    month = '' + (d.getMonth() + 1),
-    day = '' + d.getDate(),
-    year = d.getFullYear();
+  @Output() onFineSessione = new EventEmitter<IPianoStudio>();
 
-  if (month.length < 2)
-    month = '0' + month;
-  if (day.length < 2)
-    day = '0' + day;
+  @Output() onModificaPianoStudio = new EventEmitter<IPianoStudio>();
 
-  return [year, month, day].join('-');
+  @Input()
+  set Setta(v: IPianoStudio) {
+    console.log('sono in input !!!');
+    if (v) {
+      if (this.settato) {
+        this.onModificaPianoStudio.emit(this);
+        setTimeout((item: IPianoStudio) => {
+          this.SettaPiano(item);
+        }, 100, v);
+      }
+      else {
+        this.SettaPiano(v);
+      }
+    }
+  }
+  SettaPiano(v: IPianoStudio) {
+    this.dataInizio = v.dataInizio ?? new Date();
+    this.dataFine = v.dataFine ?? undefined;
+    this.listaParoleChiavi = v.listaParoleChiavi ?? [];
+    this.listaSessioniStudio = v.listaSessioniStudio ?? undefined;
+    this.timerInterno = v.timerInterno ?? {
+      statoTimer: false,
+      timer: '00:00:00',
+      count: 0,
+      numeroCicli: -1,
+      dataInizio: new Date(),
+      terminato: false
+    };
+    this.titoloOpera = v.titoloOpera ?? '';
+    this.titoloGenerale = v.titoloGenerale ?? '';
+    this.settato = true;
+  }
 }

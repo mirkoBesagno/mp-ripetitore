@@ -1,0 +1,14 @@
+<p>timer-start-stop works!</p>
+<label for="">Timer</label>
+<input type="time" [value]="timer">
+<span *ngIf='terminato == false'>
+    <button (click)='StartTimer()' [disabled]='statoTimer == true'>start</button>
+    <!-- [disabled]='GetIsDisability(true)' -->
+    <button (click)='StopTimer()' [disabled]='statoTimer == false'>stop</button>
+</span>
+<span *ngIf='terminato == true'>
+    Timer disattivato
+</span>
+<span *ngIf='terminato == false'>
+    {{count}} : {{numeroCicli}}
+</span>

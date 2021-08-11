@@ -1,30 +1,33 @@
 <p>sessione-studio works!</p>
 
 <p>{{dataInizio}}</p>
+<div>
+    <label for="">Tipo pomodoro selezionato</label>
+    <input type="text" [value]='StrutturaPomodotoToString(strutturaPomodoro)'>
 
-<label for="">Tipo pomodoro selezionato</label>
-<input type="text" [value]='StrutturaPomodotoToString(strutturaPomodoro)'>
-<!-- un riquadro con la visualizzazione dei pomodori del piano selezionato -->
-<p>visualizzazione dei pomodori previsti</p>
-<!-- due pulsanti uno start uno stop -->
-<label for="">Timer</label>
-<input type="time" [value]="timer">
-<button (click)='StartTimer()' [disabled]='statoTime == true'>start</button><!-- [disabled]='GetIsDisability(true)' -->
-<button (click)='StopTimer()' [disabled]='statoTime == false' >stop</button>
-{{count}}:{{strutturaPomodoro.count}}
+    <label for="">struttura pomodoro</label>
+    <input type="text" name="" id="" [value]="GetStrutturaPomodoroString()">
+</div>
+<div>
+    <!-- <label for="">Timer</label>
+    <input type="time" [value]="timer">
+    <span *ngIf='terminato == false'>
+        <button (click)='StartTimer()' [disabled]='statoTime == true'>start</button>
+        <button (click)='StopTimer()' [disabled]='statoTime == false'>stop</button>
+    </span> -->
+    <app-timer-start-stop (onFineTimer)="IntercettaFineTimer($event)" [Setta]='timerInterno'></app-timer-start-stop>
 
-<label for="">struttura pomodoro</label>
-<input type="text" name="" id="" [value]="GetStrutturaPomodoroString()">
+</div>
 
 <div>
     <label for="">Titolo </label>
-    <input type="text" name="" id="" [value]='titolo' [disabled]='terminato == true'
-        (change)="$event.srcElment.value != undefined ? titolo = $event.srcElment.value : titolo = titolo">
+    <input type="text" name="" id="" [value]='titolo' [disabled]='timerInterno.terminato == true'
+        (keypress)="SetTitolo($event)">
 </div>
 
 <div>
     <label for="">Commento conciso</label>
     <br>
-    <textarea name="" id="" cols="30" rows="10" [value]='commentoConciso' [disabled]='terminato == true'
-        (change)="$event.srcElment.value != undefined ? commentoConciso = $event.srcElment.value : commentoConciso = commentoConciso"></textarea>
+    <textarea name="" id="" cols="30" rows="10" [value]='commentoConciso' [disabled]='timerInterno.terminato == true'
+        (keypress)="SetCommentoConciso($event)"></textarea>
 </div>

@@ -6,73 +6,11 @@
     }
 } */
 
-export class SessioneStudio implements ISessioneStudio {
-    id: string;
-    dataInizio: Date;
-    dataFine?: Date;
-    titolo: string;
-    commentoConciso: string;
-    strutturaPomodoro: StrutturaPomodori;
-    statoTime: boolean = false;
-    timer = '00:00:00';
-    intervallo: any;
-    count = 0;
-    terminato: boolean = false;
-
-    constructor(item?: ISessioneStudio) {
-        if (item == undefined) {
-            this.dataInizio = new Date(Date.now());
-        }
-        else {
-            this.commentoConciso = item.commentoConciso ?? '';
-            this.dataInizio = item.dataInizio;
-            this.dataFine = item.dataFine;
-            this.strutturaPomodoro = item.strutturaPomodoro;
-            this.titolo = item.titolo ?? '';
-
-            this.strutturaPomodoro = item.strutturaPomodoro;
-            this.statoTime = item.statoTime;
-            this.timer = item.timer;
-            this.count = item.count;
-            this.terminato = item.terminato;
-        }
-    }
-}
-export interface IListaSessioniStudio extends Array<SessioneStudio> {
+export interface IListaSessioniStudio extends Array<ISessioneStudio> {
     AggiungiNuovoPiano(item: ISessioneStudio): boolean;
 }
-export class ListaSessioniStudio extends Array<SessioneStudio> implements IListaSessioniStudio {
-
-    constructor() {
-        super();
-    }
-
-    AggiungiNuovoPiano(item: ISessioneStudio) {
-        /* let posso = true;
-        for (let index = 0; index < this.length && posso == true; index++) {
-            const element = this[index];
-            if (element.dataFine == undefined) posso = false;
-        }
-        if (posso) {
-            this.push(new SessioneStudio(item));
-        }
-        else throw new Error("Sessioni aperte"); */
-        ListaSessioniStudio.AggiungiNuovoPiano(item, this);
-        return true;
-    }
-
-    static AggiungiNuovoPiano(item: ISessioneStudio, vet: ListaSessioniStudio) {
-        let posso = true;
-        for (let index = 0; index < vet.length && posso == true; index++) {
-            const element = vet[index];
-            if (element.dataFine == undefined) posso = false;
-        }
-        if (posso) {
-            vet.push(new SessioneStudio(item));
-            return vet;
-        }
-        else throw new Error("Sessioni aperte");
-    }
+export interface IListaPianiStudio extends Array<IPianoStudio> {
+   AggiungiNuovoPiano(item: IPianoStudio): boolean |Promise<boolean>;
 }
 
 export type StrutturaPomodori = undefined | {
@@ -88,6 +26,14 @@ export type StrutturaPomodori = undefined | {
     count: 4
 }
 
+export interface ITimer {
+    statoTimer: boolean,
+    count: number,
+    numeroCicli: number,
+    dataInizio: Date,
+    timer: string,
+    terminato: boolean
+}
 export interface ISessioneStudio {
     dataInizio: Date;
     dataFine?: Date;
@@ -96,10 +42,7 @@ export interface ISessioneStudio {
     titolo?: string;
     commentoConciso?: string;
 
-    statoTime: boolean;
-    timer: string;
-    count: number;
-    terminato: boolean;
+    timerInterno: ITimer,
 }
 
 export interface IPianoStudio {
@@ -110,10 +53,11 @@ export interface IPianoStudio {
     listaParoleChiavi?: string[];
 
     titoloOpera: string; //sarebbe piu corretto libro
-
-    lunghezzaPagine: string;
-
+    titoloGenerale: string;
     dataFine?: Date;
+    timerInterno: ITimer;
     AggiungiSessione(item: ISessioneStudio): boolean;
     StrutturaPomodotoToString(item: StrutturaPomodori): string;
 }
+
+export type StatoTimer = 'start' | 'stop' | 'terminato' | 'vuoto';

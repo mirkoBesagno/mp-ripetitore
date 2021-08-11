@@ -1,19 +1,15 @@
 
-import { ISessioneStudio } from "../../mp-classi/utility";
-/* 
-import { PrimaryGeneratedColumn } from "typeorm"; */
 
 
-import { mpClas } from "mpstation";
 import { getRepository } from "typeorm";
-import { ListaSessioniStudio as sessioni, SessioneStudio } from "../../mp-classi/utility";
+import { IListaSessioniStudio, ISessioneStudio } from "../../mp-classi/utility";
+import { SessioneStudio } from "./sessione-studio";
 
 /* export interface IListaSessioniStudio {
 
 } */
 
-@mpClas({})
-export class ListaSessioniStudio extends Array<SessioneStudio> implements sessioni {
+export class ListaSessioniStudio extends Array<ISessioneStudio> implements IListaSessioniStudio {
 
     async CreaNuovoPianoStudio(): Promise<ISessioneStudio | Error> {
         try {
@@ -29,9 +25,19 @@ export class ListaSessioniStudio extends Array<SessioneStudio> implements sessio
         super();
     }
 
-    
+
     AggiungiNuovoPiano(item: ISessioneStudio) {
-        sessioni.AggiungiNuovoPiano(item, this);        
-        return true;
+        let posso = true;
+        for (let index = 0; index < this.length && posso == true; index++) {
+            const element = this[index];
+            if (element.dataFine == undefined) posso = false;
+        }
+        if (posso) {
+            this.push(new SessioneStudio(item));
+            return true;
+        }
+        else throw new Error("Sessioni aperte");
+
+        return false;
     }
 }

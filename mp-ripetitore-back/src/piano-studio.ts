@@ -1,12 +1,20 @@
 
 import { PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
-import { mpClas } from "mpstation";
 import { ValidateIf } from "class-validator";
 import { ListaSessioniStudio } from "./lista-sessioni-studio";
-import { IPianoStudio, ISessioneStudio, StrutturaPomodori, IListaSessioniStudio } from "../../mp-classi/utility";
+import { IPianoStudio, ISessioneStudio, StrutturaPomodori, IListaSessioniStudio, ITimer } from "../../mp-classi/utility";
 
+export class InformazioniBasePianoStudio {
 
-@mpClas({})
+    titoloOpera: string; //sarebbe piu corretto libro
+
+    titoloGenerale: string;
+
+    dataFine?: Date;
+
+    dataInizio: Date;
+}
+
 export class PianoStudio implements IPianoStudio {
 
     @PrimaryGeneratedColumn()
@@ -16,24 +24,35 @@ export class PianoStudio implements IPianoStudio {
     @ValidateIf(item => item.dataInizio > new Date(Date.now()) ? true : false)
     dataInizio: Date;
 
+    @Column('varchar', { name: 'titoloOpera' })
+    titoloOpera: string; //sarebbe piu corretto libro
+
+    @Column('varchar', { name: 'titoloGenerale' })
+    titoloGenerale: string;
+
+    @Column('timestamp', { name: 'dataFine' })
+    dataFine?: Date;
 
     @OneToOne(type => ListaSessioniStudio, { nullable: false, eager: true, cascade: true, onDelete: 'CASCADE' })
     @JoinColumn({ name: "fkCredenzialiLogin" })
     listaSessioniStudio: IListaSessioniStudio;
 
-    listaParoleChiavi: string[];
+    listaParoleChiavi?: string[];
 
-    @Column('varchar', { name: 'titoloOpera' })
-    titoloOpera: string; //sarebbe piu corretto libro
+    timerInterno: ITimer;
 
-    @Column('varchar', { name: 'lunghezzaPagine' })
-    lunghezzaPagine: string;
-
-    @Column('timestamp', { name: 'dataFine' })
-    dataFine?: Date;
-
-    constructor() {
-        this.dataInizio = new Date(Date.now());
+    constructor(item?: IPianoStudio) {
+        if (item == undefined) {
+            this.dataInizio = new Date(Date.now());
+        }
+        else {
+            this.dataFine = item.dataFine;
+            this.dataInizio = item.dataInizio;
+            this.listaParoleChiavi = item.listaParoleChiavi;
+            this.listaSessioniStudio = item.listaSessioniStudio;
+            this.timerInterno = item.timerInterno;
+            this.titoloOpera = item.titoloOpera;
+        }
     }
 
 

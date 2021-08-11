@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ISessioneStudio, StrutturaPomodori } from '../../../../mp-classi/utility';
+import { ISessioneStudio, ITimer, StrutturaPomodori } from '../../../../mp-classi/utility';
 
 
 
@@ -19,11 +19,15 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
 
   /* utility */
 
-  statoTime: boolean = false;
-  timer = '00:00:00';
-  intervallo: any;
-  count = 0;
-  terminato: boolean = false;
+
+  timerInterno: ITimer = {
+    statoTimer: false,
+    timer: '00:00:00',
+    count: 0,
+    numeroCicli: 0,
+    dataInizio: new Date(),
+    terminato: false
+  };
 
   constructor() { }
 
@@ -41,14 +45,11 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
       this.dataInizio = v.dataInizio ?? new Date();
       this.strutturaPomodoro = v.strutturaPomodoro ?? undefined;
       this.titolo = v.titolo ?? '';
+
       this.commentoConciso = v.commentoConciso ?? '';
 
+      this.timerInterno = v.timerInterno;
       this.dataFine = undefined;
-
-      this.statoTime = v.statoTime ?? false;
-      this.timer = v.timer ?? '00:00:00';
-      this.count = v.count ?? 0;
-      this.terminato = v.terminato ?? false;
     }
   }
 
@@ -70,64 +71,21 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
       return 'undefined';
     }
   }
-  StartTimer() {
-    if (this.statoTime == false)
-      if (this.count < this.strutturaPomodoro.count) {
-        this.intervallo = setInterval(() => {
-          const tmp = new Date();
-          let sec = tmp.getSeconds() + '';
-          if (Number(sec) < 10 && Number(sec) != 0) sec = '0' + Number(sec);
-          else if (Number(sec) == 0) sec = '00';
-
-          let min = tmp.getMinutes() + '';
-          if (Number(min) < 10 && Number(min) != 0) min = '0' + Number(min);
-          else if (Number(min) == 0) min = '00';
-
-          let ore = tmp.getHours() + '';
-          if (Number(ore) < 10 && Number(ore) != 0) ore = '0' + ore;
-          else if (Number(ore) == 0) ore = '00';
-
-          this.timer = ore + ':' + min + ':' + sec;
-
-          const tmp1 = tmp.getTime();
-          const tmp2 = this.dataInizio.getTime()
-          this.statoTime = true;
-          if ((tmp1 - tmp2) < this.strutturaPomodoro.struttura[this.count]) {
-            this.StopTimer();
-          }
-        }
-        )
-      }
-      else {
-        alert('Troppo avanti');
-      }
-    else {
-      alert('Stoppare prima');
-    }
+  IntercettaFineTimer(item: ITimer) {
+    this.dataFine = new Date();
+    this.timerInterno = item;
+    this.onFineSessione.emit(this);
   }
-  StopTimer() {
-    if (this.intervallo != undefined)
-      clearInterval(this.intervallo);
-    this.intervallo = undefined;
-    this.statoTime = false;
-    if (this.count < this.strutturaPomodoro.count) {
-      this.count++;
-    }
-    if (this.count >= this.strutturaPomodoro.count && this.dataFine == undefined) {
-      this.dataFine = new Date();
-      this.onFineSessione.emit(this);
-      this.terminato = true;
-    }
-  }
+
   @Output() onFineSessione = new EventEmitter<ISessioneStudio>();
 
   GetIsDisability(item: boolean) {
     if (item) {
-      if (!this.statoTime)
+      if (!this.timerInterno.statoTimer)
         return true;
       else return false;
     } else {
-      if (this.statoTime)
+      if (this.timerInterno.statoTimer)
         return true;
       else return false;
     }
@@ -147,5 +105,12 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
       }
     }
     return '';
+  }
+
+  SetTitolo(item: any) {
+    this.titolo = item.srcElement.value;
+  }
+  SetCommentoConciso(item: any) {
+    this.commentoConciso = item.srcElement.value; //event.srcElment.value
   }
 }
