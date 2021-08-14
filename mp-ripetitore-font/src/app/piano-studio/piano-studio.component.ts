@@ -47,6 +47,11 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
   nuovoElemento: ISessioneStudio = undefined;
   elementoSelezionato: ISessioneStudio = undefined;
   indice = 0;
+  indiceTmp = 0;
+  public set Indice(v: number) {
+    this.indiceTmp = this.indice;
+    this.indice = v;
+  }
 
   settato = false;
 
@@ -55,6 +60,10 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
   }
   public GetDataInizio(): string {
     let tmp = formataDate(this.dataInizio.toDateString());
+    return tmp;
+  }
+  public GetDataFine(): string {
+    let tmp = formataDate(this.dataFine.toDateString());
     return tmp;
   }
   constructor() {
@@ -159,9 +168,9 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     this.elementoSelezionato.titolo = item.titolo;
     this.elementoSelezionato.commentoConciso = item.commentoConciso; */
     //this.elementoSelezionato = item;
-    this.listaSessioniStudio[this.indice] = item;
-    this.elementoSelezionato = undefined;
+    this.listaSessioniStudio.ModificaSessione(this.indice,item);
   }
+
 
   onClickMenu(item: any) {
     /* item.querySelector(".nested").classList.toggle("active");
@@ -178,22 +187,34 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
 
   @Output() onModificaPianoStudio = new EventEmitter<IPianoStudio>();
 
+  Setta(item: IPianoStudio) {
+    this.dataFine = item.dataFine;
+    this.dataInizio = item.dataInizio;
+    this.listaParoleChiavi = item.listaParoleChiavi;
+    this.listaSessioniStudio = new ListaSessioniStudio(item.listaSessioniStudio) ?? new ListaSessioniStudio();
+    this.timerInterno = item.timerInterno;
+    this.titoloOpera = item.titoloOpera;
+    this.titoloGenerale = item.titoloGenerale;
+    return true;
+  }
+
   @Input()
-  set Setta(v: IPianoStudio) {
+  set SettaComponente(v: IPianoStudio) {
     console.log('sono in input !!!');
     if (v) {
       if (this.settato) {
         this.onModificaPianoStudio.emit(new PianoStudio(this));
         setTimeout((item: IPianoStudio) => {
-          this.SettaPiano(item);
+          //this.SettaPiano(item);
+          this.Setta(item)
         }, 100, v);
       }
       else {
-        this.SettaPiano(v);
+        this.Setta(v);
       }
     }
   }
-  SettaPiano(v: IPianoStudio) {
+  /* SettaPiano(v: IPianoStudio) {
     this.dataInizio = v.dataInizio ?? new Date();
     this.dataFine = v.dataFine ?? undefined;
     this.listaParoleChiavi = v.listaParoleChiavi ?? [];
@@ -209,5 +230,11 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     this.titoloOpera = v.titoloOpera ?? '';
     this.titoloGenerale = v.titoloGenerale ?? '';
     this.settato = true;
+    if (this.dataFine != undefined) {
+      this.timerInterno.terminato = true;
+    }
+  } */
+  Salva() {
+    this.onFineSessione.emit(new PianoStudio(this));
   }
 }

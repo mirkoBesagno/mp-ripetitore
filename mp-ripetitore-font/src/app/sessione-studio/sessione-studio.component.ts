@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ISessioneStudio, ITimer, StrutturaPomodori } from '../../../../mp-classi/utility';
+import { SessioneStudio } from '../utility';
 
 
 
@@ -37,22 +38,35 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
 
   ngOnInit(): void {
   }
-
+  @Output() onModificaSessioneStudio = new EventEmitter<ISessioneStudio>();
+  settato = false;
   @Input()
-  set Setta(v: ISessioneStudio) {
+  set SettaComponente(v: ISessioneStudio) {
     console.log('sono in input !!!');
     if (v) {
-      this.dataInizio = v.dataInizio ?? new Date();
-      this.strutturaPomodoro = v.strutturaPomodoro ?? undefined;
-      this.titolo = v.titolo ?? '';
-
-      this.commentoConciso = v.commentoConciso ?? '';
-
-      this.timerInterno = v.timerInterno;
-      this.dataFine = undefined;
+      if (this.settato) {
+        this.onModificaSessioneStudio.emit(new SessioneStudio(this));
+        setTimeout((item: ISessioneStudio) => {
+          //this.SettaPiano(item);
+          this.Setta(item)
+        }, 100, v);
+      }
+      else {
+        this.Setta(v);
+      }
     }
   }
+  Setta(item: ISessioneStudio):boolean {
+    this.dataInizio = item.dataInizio ?? new Date();
+    this.strutturaPomodoro = item.strutturaPomodoro ?? undefined;
+    this.titolo = item.titolo ?? '';
 
+    this.commentoConciso = item.commentoConciso ?? '';
+
+    this.timerInterno = item.timerInterno;
+    this.dataFine = item.dataFine;
+    return true;
+  }
   StrutturaPomodotoToString(item: StrutturaPomodori): string {
     if (item && 'tipologia' in item) {
       switch (item.tipologia) {
@@ -112,5 +126,8 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
   }
   SetCommentoConciso(item: any) {
     this.commentoConciso = item.srcElement.value; //event.srcElment.value
+  }
+  Salva() {
+    this.onFineSessione.emit(this);
   }
 }

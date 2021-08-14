@@ -8,6 +8,7 @@
 
 export interface IListaSessioniStudio extends Array<ISessioneStudio> {
     AggiungiNuovoPiano(item: ISessioneStudio): boolean;
+    
 }
 export interface IListaPianiStudio extends Array<IPianoStudio> {
    AggiungiNuovoPiano(item: IPianoStudio): boolean |Promise<boolean>;
@@ -43,6 +44,8 @@ export interface ISessioneStudio {
     commentoConciso?: string;
 
     timerInterno: ITimer,
+    
+    Setta(item:ISessioneStudio):boolean;
 }
 
 export interface IPianoStudio {
@@ -58,6 +61,7 @@ export interface IPianoStudio {
     timerInterno: ITimer;
     AggiungiSessione(item: ISessioneStudio): boolean;
     StrutturaPomodotoToString(item: StrutturaPomodori): string;
+    Setta(item:IPianoStudio):boolean;
 }
 
 export type StatoTimer = 'start' | 'stop' | 'terminato' | 'vuoto';

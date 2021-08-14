@@ -1,22 +1,15 @@
-<p>sessione-studio works!</p>
 
 <p>{{dataInizio}}</p>
 <div>
     <label for="">Tipo pomodoro selezionato</label>
-    <input type="text" [value]='StrutturaPomodotoToString(strutturaPomodoro)'>
+    <input type="text" [value]='StrutturaPomodotoToString(strutturaPomodoro)' disabled>
 
     <label for="">struttura pomodoro</label>
-    <input type="text" name="" id="" [value]="GetStrutturaPomodoroString()">
+    <input type="text" name="" id="" [value]="GetStrutturaPomodoroString()" disabled>
 </div>
 <div>
-    <!-- <label for="">Timer</label>
-    <input type="time" [value]="timer">
-    <span *ngIf='terminato == false'>
-        <button (click)='StartTimer()' [disabled]='statoTime == true'>start</button>
-        <button (click)='StopTimer()' [disabled]='statoTime == false'>stop</button>
-    </span> -->
     <app-timer-start-stop (onFineTimer)="IntercettaFineTimer($event)" [Setta]='timerInterno'></app-timer-start-stop>
-
+    <button (click)='Salva()'>Salva</button>
 </div>
 
 <div>

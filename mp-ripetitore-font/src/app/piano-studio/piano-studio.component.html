@@ -1,99 +1,129 @@
-<p>piano-studio works!</p>
-
-
-<div>
-    <label for="inizioPianoStudio">Data inizio paino studio </label>
-    <input type="date" name="" [value]="GetDataInizio()" (change)='SetDataInizio($event.srcElement.value)'>
-</div>
-
-<div>
-    <label for="titoloOpera">Titolo opera </label>
-    <input type="text" name="" [value]="TitoloOpera" (change)='TitoloOpera = $event.srcElement.value'>
-</div>
-
-<div>
-    <label for="titoloGenerale">Titolo generale </label>
-    <input type="text" name="" [value]="TitoloGenerale" (change)='TitoloGenerale = $event.srcElement.value'>
-</div>
-
-<div>
-    <app-timer-start-stop (onFineTimer)="IntercettaFineTimer($event)" [Setta]='timerInterno'>
-
-    </app-timer-start-stop>
-</div>
-
-<div *ngIf='dataFine != undefined'>
-    <label for="dataFine">Data fine paino studio </label>
-    <input type="date" name="" [value]="dataFine" disabled>
-</div>
-
-<div *ngIf='dataFine == undefined'>
-    <label for="dataFine">Piano studio ancora aperto</label>
-</div>
-
-<ul id="myUL">
-    <li *ngFor="let sessione of listaSessioniStudio; let i=index;" (click)="onClickMenu($event)">
-        <!-- <samp>{{sessione.titolo}} : {{sessione.dataInizio}}</samp> -->
-        <button title="clicca per selezionare la sessione" (click)="SelezionaSessioneStudio(sessione); indice=i;">
-            {{sessione.titolo}} : {{sessione.dataInizio | date:'M/d/yy, h:mm a z'}}
-        </button>
-        <ul class="nested">
-            <!-- *ngFor="let item of sessione; let i=index;" -->
-            <li>
-                <samp>{{sessione.dataInizio | date:'M/d/yy, h:mm a z'}} : {{sessione.dataFine | date:'M/d/yy, h:mm a
-                    z'}}</samp>
-            </li>
-            <li>
-                <samp>{{StrutturaPomodotoToString(sessione.strutturaPomodoro)}}</samp>
-            </li>
-            <li>
-                <samp>{{sessione.commentoConciso}}</samp>
-            </li>
-        </ul>
-    </li>
-</ul>
-
-<div class="tab">
-    <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'SessioneSelezionata')">
-        Sessione selezionata
-    </button>
-    <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'NuovaSessione')">
-        Nuova sessione
-    </button>
-    <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'TerminaStudio')">
-        Termina studio
-    </button>
-</div>
-
-<div id="NuovaSessione" class="tabcontent">
-    <label for="">Lista possibili pomodori</label>
-    <select name="cars" id="pomodoroselezionato" (change)="SelezionaPomodoro($event)">
-        <option value="" selected disabled hidden>...</option>
-        <option value="I">I (20 - 2 * 2 - 20)</option>
-        <option value="II">II (35 - 2 * 2 - 20)</option>
-        <option value="III">III (40 - 2 * 2 - 20)</option>
-    </select>
-    <button (click)="AggiungiSessione()">Aggiungi Sessione</button>
-</div>
-
-<div id="SessioneSelezionata" class="tabcontent">
-    ---- **** !!!! **** ----
-    <div *ngIf='elementoSelezionato != undefined'>
-        <app-sessione-studio id="elementoSelezionato" [Setta]='elementoSelezionato'
-            (onFineSessione)='FineSessione($event)'>
-        </app-sessione-studio>
-    </div>
-    ---- **** !!!! **** ----
-</div>
-
-<div id="TerminaStudio" class="tabcontent">
-<button>Termina studio</button>
-<div>
-    <label for="">Commento finale</label>
-    <textarea name="" id="" cols="30" rows="10"></textarea>
-</div>
-</div>
 <!-- <div *ngFor="let item of listaSessioni; let i=index;">
     <label for="">({{i}})</label>    
     <app-sessione-studio id="sessioneSelezionata" [Setta]='item'></app-sessione-studio>
+</div> -->
+
+
+<div class="grid-container" style="background-color: beige;">
+    <div class="item1">
+        <!-- Header -->
+        <div>
+            <div style=" display: inline-block">
+                <label for="inizioPianoStudio">Data inizio paino studio </label>
+                <input type="date" name="" [value]="GetDataInizio()" (change)='SetDataInizio($event.srcElement.value)'
+                    disabled>
+            </div>
+            <div *ngIf='dataFine != undefined' style=" display: inline-block">
+                <label for="dataFine">Data fine paino studio </label>
+                <input type="date" name="" [value]="GetDataFine()" disabled>
+            </div>
+            <div *ngIf='dataFine == undefined' style=" display: inline-block">
+                <label for="dataFine">Piano studio ancora aperto</label>
+            </div>
+        </div>
+        <div>
+            <div style=" display: inline-block">
+                <label for="titoloOpera">Titolo opera </label>
+                <input type="text" name="" [value]="TitoloOpera" (change)='TitoloOpera = $event.srcElement.value'>
+            </div>
+
+            <div style=" display: inline-block">
+                <label for="titoloGenerale">Titolo generale </label>
+                <input type="text" name="" [value]="TitoloGenerale" (change)='TitoloGenerale = $event.srcElement.value'>
+            </div>
+        </div>
+        <div>
+            <div style=" display: inline-block">
+                <app-timer-start-stop (onFineTimer)="IntercettaFineTimer($event)" [Setta]='timerInterno'>
+                </app-timer-start-stop>
+                <button (click)='Salva()'>Salva</button>
+            </div>
+        </div>
+    </div>
+    <div class="item2">
+        <!-- <p>Menu</p> -->
+        <div style="height: 600px; width: 400px; overflow: scroll;" *ngIf='listaSessioniStudio.length != undefined'>
+            <ul id="myUL">
+                <li *ngFor="let sessione of listaSessioniStudio; let i=index;" (click)="onClickMenu($event)">
+                    <!-- <samp>{{sessione.titolo}} : {{sessione.dataInizio}}</samp> -->
+                    <button title="clicca per selezionare la sessione"
+                        (click)="SelezionaSessioneStudio(sessione); Indice=i;">
+                        {{sessione.titolo}}
+                    </button>
+                    <ul class="nested">
+                        <!-- *ngFor="let item of sessione; let i=index;" -->
+                        <li>
+                            <samp>{{sessione.dataInizio | date:'dd/MM/yyyy'}} : {{sessione.dataFine |
+                                date:'dd/MM/yyyy'}}</samp>
+                        </li>
+                        <li>
+                            <samp>{{StrutturaPomodotoToString(sessione.strutturaPomodoro)}}</samp>
+                        </li>
+                        <li>
+                            <samp>{{sessione.commentoConciso}}</samp>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="item3">
+        <!-- <p>Main</p> -->
+        <div class="tab">
+            <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'SessioneSelezionata')">
+                Sessione selezionata
+            </button>
+            <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'NuovaSessione')"
+                *ngIf='dataFine == undefined'>
+                Nuova sessione
+            </button>
+            <button class="tablinks" (click)="SchegliNuovoSelezionata($event, 'TerminaStudio')"
+                *ngIf='dataFine == undefined'>
+                Termina studio
+            </button>
+        </div>
+        <div id="NuovaSessione" class="tabcontent" *ngIf='dataFine == undefined'>
+            <label for="">Lista possibili pomodori</label>
+            <select name="cars" id="pomodoroselezionato" (change)="SelezionaPomodoro($event)">
+                <option value="" selected disabled hidden>...</option>
+                <option value="I">I (20 - 2 * 2 - 20)</option>
+                <option value="II">II (35 - 2 * 2 - 20)</option>
+                <option value="III">III (40 - 2 * 2 - 20)</option>
+            </select>
+            <button (click)="AggiungiSessione()">Aggiungi Sessione</button>
+        </div>
+        <div id="SessioneSelezionata" class="tabcontent">
+            ---- **** !!!! **** ----
+            <div *ngIf='elementoSelezionato != undefined'>
+                <app-sessione-studio id="elementoSelezionato" [SettaComponente]='elementoSelezionato'
+                    (onFineSessione)='FineSessione($event)'>
+                </app-sessione-studio>
+            </div>
+            ---- **** !!!! **** ----
+        </div>
+        <div id="TerminaStudio" class="tabcontent" *ngIf='dataFine == undefined'>
+            <button>Termina studio</button>
+            <div>
+                <label for="">Commento finale</label>
+                <textarea name="" id="" cols="30" rows="10"></textarea>
+            </div>
+        </div>
+    </div>
+    <!-- 
+    <div class="item4">Right</div>
+    <div class="item5">Footer</div> -->
+</div>
+
+<!-- 
+
+<div style="height: 100%;width: 100%; background-color: blueviolet;">
+
+    <div style="height: 98%;width: 28%; display: inline-block; background-color: brown; margin: 1%;">
+
+    </div>
+
+    <div style="height: 98%;width: 68%; display: inline-block; background-color: darkblue; margin: 1%">
+
+    </div>
+    
 </div> -->

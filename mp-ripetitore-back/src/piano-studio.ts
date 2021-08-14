@@ -4,6 +4,17 @@ import { ValidateIf } from "class-validator";
 import { ListaSessioniStudio } from "./lista-sessioni-studio";
 import { IPianoStudio, ISessioneStudio, StrutturaPomodori, IListaSessioniStudio, ITimer } from "../../mp-classi/utility";
 
+export interface IInformazioniBasePianoStudio {
+
+    titoloOpera: string; //sarebbe piu corretto libro
+
+    titoloGenerale: string;
+
+    dataFine?: Date;
+
+    dataInizio: Date;
+}
+
 export class InformazioniBasePianoStudio {
 
     titoloOpera: string; //sarebbe piu corretto libro

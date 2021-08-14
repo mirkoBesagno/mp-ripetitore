@@ -93,4 +93,15 @@ export class TimerStartStopComponent implements OnInit, ITimer {
       this.numeroCicli = item.numeroCicli ?? this.count;
     }
   }
+
+  public get determinaDisabilita(): boolean {
+    if (this.terminato == false) {
+      if (this.statoTimer == false) return false;
+      if (this.statoTimer == true) return true;
+      else return true;
+    }
+    else {
+      return true;
+    }
+  }
 }

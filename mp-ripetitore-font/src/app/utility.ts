@@ -64,21 +64,31 @@ export class SessioneStudio implements ISessioneStudio {
             this.dataInizio = new Date(Date.now());
         }
         else {
-            this.commentoConciso = item.commentoConciso ?? '';
-            this.dataInizio = item.dataInizio;
-            this.dataFine = item.dataFine;
-            this.strutturaPomodoro = item.strutturaPomodoro;
-            this.titolo = item.titolo ?? '';
-
-            this.strutturaPomodoro = item.strutturaPomodoro;
-            this.timerInterno = item.timerInterno;
+            this.Setta(item);
         }
+    }
+    Setta(item: ISessioneStudio) {
+        this.dataInizio = item.dataInizio ?? new Date();
+        this.strutturaPomodoro = item.strutturaPomodoro ?? undefined;
+        this.titolo = item.titolo ?? '';
+
+        this.commentoConciso = item.commentoConciso ?? '';
+
+        this.timerInterno = item.timerInterno;
+        this.dataFine = item.dataFine;
+        return true;
     }
 }
 export class ListaSessioniStudio extends Array<ISessioneStudio> implements IListaSessioniStudio {
 
-    constructor() {
+    constructor(item?: IListaSessioniStudio) {
         super();
+        if (item) {
+            for (let index = 0; index < item.length; index++) {
+                const element = item[index];
+                this.AggiungiNuovoPiano(<ISessioneStudio><any>element);
+            }
+        }
     }
 
     AggiungiNuovoPiano(item: ISessioneStudio) {
@@ -109,6 +119,11 @@ export class ListaSessioniStudio extends Array<ISessioneStudio> implements IList
         }
         else throw new Error("Sessioni aperte");
     } */
+
+    ModificaSessione(index: number, item: ISessioneStudio) {
+        this[index].Setta(item);
+    }
+
 }
 
 
@@ -133,6 +148,10 @@ export class ListaPianiStudio extends Array<IPianoStudio> implements IListaPiani
             return false;
         }
     }
+    ModificaPiano(index: number, item: IPianoStudio) {
+        this[index].Setta(item);
+    }
+
 }
 export class PianoStudio implements IPianoStudio {
 
@@ -156,16 +175,20 @@ export class PianoStudio implements IPianoStudio {
             this.listaSessioniStudio = new ListaSessioniStudio();
         }
         else {
-            this.dataFine = item.dataFine;
-            this.dataInizio = item.dataInizio;
-            this.listaParoleChiavi = item.listaParoleChiavi;
-            this.listaSessioniStudio = item.listaSessioniStudio ?? new ListaSessioniStudio();
-            this.timerInterno = item.timerInterno;
-            this.titoloOpera = item.titoloOpera;
-            this.titoloGenerale = item.titoloGenerale;
+            this.Setta(item);
         }
     }
 
+    Setta(item: IPianoStudio) {
+        this.dataFine = item.dataFine;
+        this.dataInizio = item.dataInizio;
+        this.listaParoleChiavi = item.listaParoleChiavi;
+        this.listaSessioniStudio = item.listaSessioniStudio ?? new ListaSessioniStudio();
+        this.timerInterno = item.timerInterno;
+        this.titoloOpera = item.titoloOpera;
+        this.titoloGenerale = item.titoloGenerale;
+        return true;
+    }
 
     AggiungiSessione(item: ISessioneStudio): boolean {
         try {
@@ -204,14 +227,14 @@ export interface IInterazioneVettoriale<T> {
 
 export function formataDate(date) {
     var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
-  
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
     if (month.length < 2)
-      month = '0' + month;
+        month = '0' + month;
     if (day.length < 2)
-      day = '0' + day;
-  
+        day = '0' + day;
+
     return [year, month, day].join('-');
-  }
+}

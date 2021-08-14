@@ -71,55 +71,64 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
           count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
         }
       });
+      /* piano.timerInterno = {
+        count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
+      }; */
       piano.dataFine = new Date();
-      piano.titoloGenerale = '';
-      this.listaPianiStudio.AggiungiNuovoPiano(piano);
+      piano.titoloOpera = 'primo ooo iii';
+      piano.titoloGenerale = 'primo oooo';
+      this.listaPianiStudio.AggiungiNuovoPiano(piano).then(result => {
 
-      piano = new PianoStudio();
+        piano = new PianoStudio();
 
-      piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'I', count: 2, struttura: [25, 5] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'primo capitolo',
-        timerInterno: {
-          count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'II', count: 4, struttura: [20, 5, 20, 5] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'secondo capitolo',
-        timerInterno: {
-          count: 4, numeroCicli: 4, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'III', count: 4, struttura: [50, 10, 50, 10] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'terzo capitolo',
-        timerInterno: {
-          count: 4, numeroCicli: 4, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'I', count: 2, struttura: [25, 5] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'quarto capitolo',
-        timerInterno: {
-          count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
+        piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'I', count: 2, struttura: [25, 5] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'primo capitolo',
+          timerInterno: {
+            count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'II', count: 4, struttura: [20, 5, 20, 5] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'secondo capitolo',
+          timerInterno: {
+            count: 4, numeroCicli: 4, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'III', count: 4, struttura: [50, 10, 50, 10] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'terzo capitolo',
+          timerInterno: {
+            count: 4, numeroCicli: 4, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'I', count: 2, struttura: [25, 5] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'quarto capitolo',
+          timerInterno: {
+            count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        piano.titoloOpera = 'secondo ooo iiii'
+        piano.titoloGenerale = 'secodo ooo';
+        this.listaPianiStudio.AggiungiNuovoPiano(piano).then(reslut2 => {
+
+          console.log(this.listaPianiStudio);
+        });
       });
 
-      piano.titoloGenerale = '';
-      this.listaPianiStudio.AggiungiNuovoPiano(piano);
     } catch (er) {
       console.log(er);
 
@@ -128,26 +137,15 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
 
 
   ngOnInit(): void {
-    this.nuovoElemento = <IPianoStudio>{
-      dataInizio: new Date(),
-      listaSessioniStudio: {},
-      timerInterno: {
-        count: 0,
-        dataInizio: new Date(),
-        numeroCicli: 0,
-        statoTimer: false,
-        terminato: false,
-        timer: '00:00:00'
-      },
-      titoloOpera: '',
-      dataFine: undefined,
-      listaParoleChiavi: []
-    };
+    this.nuovoElemento = new PianoStudio();
   }
 
-  SelezionaPianoStudio(item: IPianoStudio) {
+  SelezionaPianoStudio(item: IPianoStudio, index?: number) {
     console.log('seleziono');
+    //this.elementoSelezionato.Setta(item);
     this.elementoSelezionato = item;
+    if (index)
+      this.indice = index;
   }
 
   SchegliNuovoSelezionata(evt, cityName) {
@@ -163,12 +161,13 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
   }
+
   AggiungiPianoStudio() {
     try {
       this.listaPianiStudio.AggiungiNuovoPiano(this.nuovoElemento);
-      this.nuovoElemento = <IPianoStudio>{
+      this.nuovoElemento = new PianoStudio();/* <IPianoStudio>{
         dataInizio: new Date(),
-        listaSessioniStudio: {},
+        listaSessioniStudio: new ListaSessioniStudio(),
         timerInterno: {
           count: 0,
           dataInizio: new Date(),
@@ -180,7 +179,7 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
         titoloOpera: '',
         dataFine: undefined,
         listaParoleChiavi: []
-      };
+      }; */
       (<any>document.getElementById('pomodoroselezionato')).selectedIndex = 0;
       return true;
     } catch (error) {
@@ -196,8 +195,9 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
     this.elementoSelezionato.titolo = item.titolo;
     this.elementoSelezionato.commentoConciso = item.commentoConciso; */
     //this.elementoSelezionato = item;
-    this.listaPianiStudio[this.indice] = item;
-    this.elementoSelezionato = undefined;
+    this.listaPianiStudio.ModificaPiano(this.indice, item);//[this.indice] = item;
+    /* this.indiceTmp = this.Indice;
+    this.elementoSelezionato = undefined; */
   }
   ModificaSessione(item: IPianoStudio) {
     console.log('modifica sessione');
@@ -206,7 +206,7 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
     this.elementoSelezionato.titolo = item.titolo;
     this.elementoSelezionato.commentoConciso = item.commentoConciso; */
     //this.elementoSelezionato = item;
-    this.listaPianiStudio[this.indiceTmp] = item;
+    this.listaPianiStudio.ModificaPiano(this.indiceTmp, item);//[this.indiceTmp] = item;
     //this.elementoSelezionato = undefined;
     console.log('dhdjdj');
 
