@@ -26,7 +26,7 @@ export class ListaSessioniStudio extends Array<ISessioneStudio> implements IList
     }
 
 
-    AggiungiNuovoPiano(item: ISessioneStudio) {
+    AggiungiNuovaSessione(item: ISessioneStudio) {
         let posso = true;
         for (let index = 0; index < this.length && posso == true; index++) {
             const element = this[index];
@@ -39,5 +39,10 @@ export class ListaSessioniStudio extends Array<ISessioneStudio> implements IList
         else throw new Error("Sessioni aperte");
 
         return false;
+    }
+    
+    ModificaSessione(index: number, item: ISessioneStudio) {
+        this[index].Setta(item);
+        return true;
     }
 }

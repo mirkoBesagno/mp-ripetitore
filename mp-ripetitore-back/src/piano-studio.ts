@@ -53,6 +53,10 @@ export class PianoStudio implements IPianoStudio {
     timerInterno: ITimer;
 
     constructor(item?: IPianoStudio) {
+        this.Setta(item);
+    }
+
+    Setta(item?: IPianoStudio):boolean {
         if (item == undefined) {
             this.dataInizio = new Date(Date.now());
         }
@@ -64,12 +68,12 @@ export class PianoStudio implements IPianoStudio {
             this.timerInterno = item.timerInterno;
             this.titoloOpera = item.titoloOpera;
         }
+        return true;
     }
-
 
     AggiungiSessione(item: ISessioneStudio): boolean {
         try {
-            this.listaSessioniStudio.AggiungiNuovoPiano(item);
+            this.listaSessioniStudio.AggiungiNuovaSessione(item);
             return true;
         } catch (error) {
             console.log(error);

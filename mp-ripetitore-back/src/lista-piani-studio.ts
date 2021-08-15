@@ -9,7 +9,7 @@ import { PianoStudio } from "./piano-studio";
 import { getRepository } from "typeorm";
 import { IListaPianiStudio, IPianoStudio } from "../../mp-classi/utility";
 
-@mpClas({percorso:'ListaPianiStudio'})
+@mpClas({ percorso: 'ListaPianiStudio' })
 export class ListaPianiStudio extends Array<IPianoStudio> implements IListaPianiStudio {
 
     async CreaNuovoPianoStudio(): Promise<IPianoStudio | Error> {
@@ -27,7 +27,7 @@ export class ListaPianiStudio extends Array<IPianoStudio> implements IListaPiani
     }
 
     @mpMet({ path: 'AggiungiNuovoPiano', tipo: 'post' })
-    AggiungiNuovoPiano(@mpPar({ posizione: 'body', tipo: 'object', nome:'item' }) item: IPianoStudio) {
+    AggiungiNuovoPiano(@mpPar({ posizione: 'body', tipo: 'object', nome: 'item' }) item: IPianoStudio) {
         let posso = true;
         for (let index = 0; index < this.length && posso == true; index++) {
             const element = this[index];
@@ -40,5 +40,10 @@ export class ListaPianiStudio extends Array<IPianoStudio> implements IListaPiani
         else throw new Error("Sessioni aperte");
 
         return false;
+    }
+
+    ModificaPiano(index: number, item: IPianoStudio) {
+        this[index].Setta(item);
+        return true;
     }
 }

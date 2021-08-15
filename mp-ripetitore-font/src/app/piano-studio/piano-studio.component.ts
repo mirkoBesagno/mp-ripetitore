@@ -42,6 +42,8 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     return this.titoloGenerale;
   }
 
+  sessioniAperte:boolean=false;
+
   dataFine?: Date;
 
   nuovoElemento: ISessioneStudio = undefined;
@@ -69,17 +71,26 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
   constructor() {
     this.dataInizio = new Date();
   }
+
+  /* altezza = 0;
+  larghezza = 0; */
   ngOnInit(): void {
     this.dataInizio = new Date();
+
+    /* const tmp = document.getElementById('idPianiStudioMenu');
+    this.altezza = tmp.scrollHeight;
+    this.larghezza = tmp.scrollWidth;
+    console.log(tmp); */
+
   }
   Prevista(item: any) {
     const tmp = this.nuovoElemento;
     this.nuovoElemento = undefined;
     this.nuovoElemento = tmp;
   }
-  AggiungiSessione() {
+  async AggiungiSessione() {
     try {
-      this.listaSessioniStudio.AggiungiNuovoPiano(this.nuovoElemento);
+      await this.listaSessioniStudio.AggiungiNuovaSessione(this.nuovoElemento);
       this.nuovoElemento = <ISessioneStudio>{
         dataInizio: new Date(), strutturaPomodoro: undefined,
         timerInterno: {
@@ -162,15 +173,21 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
       return 'undefined';
     }
   }
-  FineSessione(item: ISessioneStudio) {
+  async FineSessione(item: ISessioneStudio) {
     console.log(item);
     /* this.elementoSelezionato.dataFine = item.dataFine;
     this.elementoSelezionato.titolo = item.titolo;
     this.elementoSelezionato.commentoConciso = item.commentoConciso; */
     //this.elementoSelezionato = item;
-    this.listaSessioniStudio.ModificaSessione(this.indice,item);
+
+    //await this.listaSessioniStudio.ModificaSessione(this.indice,item);
+
+    await this.elementoSelezionato.Setta(item);
+    this.Salva();
   }
 
+  switch1 = false;
+  switch2 = false;
 
   onClickMenu(item: any) {
     /* item.querySelector(".nested").classList.toggle("active");
@@ -201,6 +218,8 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
   @Input()
   set SettaComponente(v: IPianoStudio) {
     console.log('sono in input !!!');
+    this.elementoSelezionato = undefined;
+    this.nuovoElemento = undefined;
     if (v) {
       if (this.settato) {
         this.onModificaPianoStudio.emit(new PianoStudio(this));
@@ -213,6 +232,9 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
         this.Setta(v);
       }
     }
+
+    /* tmp.height = this.altezza;
+    tmp.scrollWidth = this.larghezza; */
   }
   /* SettaPiano(v: IPianoStudio) {
     this.dataInizio = v.dataInizio ?? new Date();

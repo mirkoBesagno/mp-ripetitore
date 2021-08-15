@@ -12,6 +12,7 @@ import { ListaPianiDiStudioComponent } from './lista-piani-di-studio/lista-piani
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatGridListModule, MatGridTile, MatGridList } from "@angular/material/grid-list";
+import { PersonaComponent } from './persona/persona.component';
 /* import { TreeviewModule } from 'ngx-treeview';
 import { TreeModule } from '@circlon/angular-tree-component';
  */
@@ -24,7 +25,8 @@ import { TreeModule } from '@circlon/angular-tree-component';
     RipetizioneComponent,
     PomodoroComponent,
     TimerStartStopComponent,
-    ListaPianiDiStudioComponent
+    ListaPianiDiStudioComponent,
+    PersonaComponent
   ],
   imports: [
     BrowserModule,

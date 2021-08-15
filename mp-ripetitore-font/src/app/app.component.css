@@ -1,0 +1,70 @@
+/* 
+.listaPianiStudioMenu {
+    grid-row-start: 1;
+    grid-row-end: 3;
+  
+    grid-column-start: 1;
+    grid-column-end: 1;
+  
+
+    background-color: aqua;
+   }
+  
+  .listaPianiStudioMain {
+    grid-row-start: 1;
+    grid-row-end: 3;
+  
+    grid-column-start: 2;
+    grid-column-end: 10;
+  
+
+    background-color: blanchedalmond;
+   }
+   
+  
+  .grid-container-listaPianiStudio {
+    display: grid;
+    grid-template-columns: auto auto auto;
+  
+    width: 100%;
+    height: 100%;
+  }
+
+.pianiStudioHeader { 
+    grid-row-start: 1;
+    grid-row-end: 1;
+  
+    grid-column-start: 1;
+    grid-column-end: 4;
+
+    background-color: brown;
+  }
+  
+  .pianiStudioMenu { 
+    grid-row-start: 2;
+    grid-row-end: 10;
+  
+    grid-column-start: 1;
+    grid-column-end: 1;
+
+    background-color: coral;
+   }
+  
+  .pianiStudioMain { 
+    grid-row-start: 2;
+    grid-row-end: 10;
+  
+    grid-column-start: 2;
+    grid-column-end: 4;
+
+    background-color: darkgray;
+   }
+  
+  .gridContainePianiStudio {
+    display: grid;
+    grid-template-columns: auto auto auto;
+  
+    width: 100%;
+    height: 100%;
+  }
+   */

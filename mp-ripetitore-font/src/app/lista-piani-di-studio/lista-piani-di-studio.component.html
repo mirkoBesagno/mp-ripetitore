@@ -1,129 +1,40 @@
-<div class="grid-container-listaPianiStudio" style="background-color: aliceblue;">
-    <div class="listaPianiStudioMenu">
-        <div style="height: 50%; width: 100%; overflow: scroll;">
-            <label for="">Lista piani studio</label>
-            <div>
-                <ul id="myUL" style="font-size: small;">
-                    <li *ngFor="let piano of ListaPianiStudio; let i=index;" (click)="onClickMenu($event)">
-                        <button title="clicca per selezionare il piano" (click)="SelezionaPianoStudio(piano); Indice=i;"
-                            [ngbPopover]="popVistaTemporaneaPianoStudioContent"
-                            [popoverTitle]="popVistaTemporaneaPianoStudioTitle" triggers="mouseenter:mouseleave"
-                            placement="right-top" (mouseenter)="elementoTmp= piano" container="body">
-                            {{piano.titoloOpera}} : {{piano.dataInizio | date:'dd/MM/yyyy'}}
-                        </button>
-                        <ng-template #popVistaTemporaneaPianoStudioContent>
-                            <p>titolo : {{elementoTmp.titoloOpera}}</p>
-                            <p>data inizio : {{elementoTmp.dataInizio | date:'dd/MM/yyyy'}}</p>
-                            <p>data fine : {{elementoTmp.dataFine | date:'dd/MM/yyyy'}}</p>
-                        </ng-template>
-                        <ng-template #popVistaTemporaneaPianoStudioTitle>Piano studio</ng-template>
-                    </li>
-                    <li>
-                        <button [ngbPopover]="popAggiungiPianoContent" [popoverTitle]="popAggiungiPianoTitle"
-                            placement="right" [autoClose]="false" triggers="manual" #aggiungiPiano="ngbPopover"
-                            (click)="switch == false ? aggiungiPiano.open() : aggiungiPiano.close(); switch=!switch;">
-                            Aggiungi nuovo piano
-                            <ng-template #popAggiungiPianoContent>
-                                <div>
-                                    <label for="inizioPianoStudio">Data inizio paino studio </label>
-                                    <input type="date" name="" [value]="GetDataInizio()"
-                                        (change)='SetDataInizio($event.srcElement.value)'>
-                                </div>
-                                <div>
-                                    <label for="titoloOpera">Titolo opera </label>
-                                    <input type="text" name="" [value]="nuovoElemento.titoloOpera"
-                                        (change)='nuovoElemento.titoloOpera = $event.srcElement.value'>
-                                </div>
-                                <button (click)="AggiungiPianoStudio()">Aggiungi</button>
-                            </ng-template>
-                            <ng-template #popAggiungiPianoTitle>Aggiungi nuovo piano Studio</ng-template>
-                        </button>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div style="height: 50%; width: 100%; overflow: scroll;">
-            <label for="">Lista ripetizioni</label>
-            <div>
-                <ul>
-                    <li>ddddd</li>
-                    <li>dddasdsff</li>
-                    <li>ddddd</li>
-                    <li>dddasdsff</li>
-                    <li>ddddd</li>
-                    <li>dddasdsff</li>
-                    <li>ddddd</li>
-                    <li>dddasdsff</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="listaPianiStudioMain">
-<label for="" style="position: absolute;">
-            Piano selezionato:
-        </label>
-        <app-piano-studio [SettaComponente]='elementoSelezionato' (onFineSessione)='FineSessione($event)'
-            (onModificaPianoStudio)='ModificaSessione($event)'>
-        </app-piano-studio>
-    </div>
+<label for="">Lista piani studio</label>
+<div>
+    <ul id="myUL" style="font-size: small;">
+        <li *ngFor="let piano of ListaPianiStudio; let i=index;" (click)="onClickMenu($event)">
+            <button title="clicca per selezionare il piano" (click)="SelezionaPianoStudio(piano, i);"
+                [ngbPopover]="popVistaTemporaneaPianoStudioContent" [popoverTitle]="popVistaTemporaneaPianoStudioTitle"
+                triggers="mouseenter:mouseleave" placement="right-top" (mouseenter)="elementoTmp= piano"
+                container="body">
+                {{piano.titoloOpera}} : {{piano.dataInizio | date:'dd/MM/yyyy'}}
+            </button>
+            <ng-template #popVistaTemporaneaPianoStudioContent>
+                <p>titolo : {{elementoTmp.titoloOpera}}</p>
+                <p>data inizio : {{elementoTmp.dataInizio | date:'dd/MM/yyyy'}}</p>
+                <p>data fine : {{elementoTmp.dataFine | date:'dd/MM/yyyy'}}</p>
+            </ng-template>
+            <ng-template #popVistaTemporaneaPianoStudioTitle>Piano studio</ng-template>
+        </li>
+        <li>
+            <button [ngbPopover]="popAggiungiPianoContent" [popoverTitle]="popAggiungiPianoTitle" placement="right"
+                [autoClose]="false" triggers="manual" #aggiungiPiano="ngbPopover"
+                (click)="switch == false ? aggiungiPiano.open() : aggiungiPiano.close(); switch=!switch;">
+                Aggiungi nuovo piano
+                <ng-template #popAggiungiPianoContent>
+                    <div>
+                        <label for="inizioPianoStudio">Data inizio paino studio </label>
+                        <input type="date" name="" [value]="GetDataInizio()"
+                            (change)='SetDataInizio($event.srcElement.value)'>
+                    </div>
+                    <div>
+                        <label for="titoloOpera">Titolo opera </label>
+                        <input type="text" name="" [value]="nuovoElemento.titoloOpera"
+                            (change)='nuovoElemento.titoloOpera = $event.srcElement.value'>
+                    </div>
+                    <button (click)="AggiungiPianoStudio()">Aggiungi</button>
+                </ng-template>
+                <ng-template #popAggiungiPianoTitle>Aggiungi nuovo piano Studio</ng-template>
+            </button>
+        </li>
+    </ul>
 </div>
-
-
-<!-- 
-<div style="height: 100%;width: 100%; background-color: blueviolet;">
-
-    <div style="height: 98%;width: 28%; display: inline-block; background-color: brown; margin: 1%;">
-        
-        
-
-    </div>
-
-    <div style="height: 98%;width: 68%; display: inline-block; background-color: darkblue; margin: 1%">
-
-        
-        
-    </div>
-
-</div> -->
-
-
-
-
-<!-- <div style="height: 100%;width: 100%;">
-    <div style="height: 100%;width: 30%;">
-
-    </div>
-    <div style="height: 100%;width: 70%;">
-
-    </div>
-</div> -->
-
-<!-- 
-<div class="tab">
-    <button class="tablistapiani" (click)="SchegliNuovoSelezionata($event, 'PianoSelezionato')">
-        Piano selezionato
-    </button>
-    <button class="tablistapiani" (click)="SchegliNuovoSelezionata($event, 'NuovoPiano')">
-        Nuovo piano
-    </button>
-</div>
-
-<div id="PianoSelezionato" class="tabcontentlistapiani">
-    <div>
-        <label for="">
-            Nuovo piano:
-        </label>
-        <app-piano-studio [Setta]='elementoSelezionato' (onFineSessione)='FineSessione($event)'>
-        </app-piano-studio>
-    </div>
-</div>
-
-<div id="NuovoPiano" class="tabcontentlistapiani">
-    <button (click)="AggiungiPianoStudio()">Aggiungi nuovo piano</button>
-</div>
- -->
-
-<!--</mat-grid-tile>
-     <mat-grid-tile>3</mat-grid-tile>
-    <mat-grid-tile>4</mat-grid-tile>
-</mat-grid-list> -->

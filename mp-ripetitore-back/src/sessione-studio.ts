@@ -42,4 +42,16 @@ export class SessioneStudio implements ISessioneStudio {
             this.strutturaPomodoro = item.strutturaPomodoro;
         }
     }
+    Setta(item?: ISessioneStudio):boolean {
+        if (item == undefined) {
+            this.dataInizio = new Date(Date.now());
+        }
+        else {
+            this.dataInizio = item.dataInizio;
+            this.dataFine = item.dataFine;
+            this.strutturaPomodoro = item.strutturaPomodoro;
+        }
+        return true;
+    }
+
 }

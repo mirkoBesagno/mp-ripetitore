@@ -1,0 +1,51 @@
+<div class="grid-container-listaPianiStudio" style="background-color: aliceblue;">
+    <div class="listaPianiStudioMenu">
+        <div style="height: 50%; width: 100%; overflow: scroll;">
+            <app-lista-piani-di-studio 
+            (onSelezionaPianoStudio)='SelezionaPianoStudio($event)'
+            [SettaComponente]='listaPianiStudio'></app-lista-piani-di-studio>
+        </div>
+        <div style="height: 50%; width: 100%; overflow: scroll;">
+            <label for="">Lista ripetizioni</label>
+            <div>
+                <ul>
+                    <li>ddddd</li>
+                    <li>dddasdsff</li>
+                    <li>ddddd</li>
+                    <li>dddasdsff</li>
+                    <li>ddddd</li>
+                    <li>dddasdsff</li>
+                    <li>ddddd</li>
+                    <li>dddasdsff</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="listaPianiStudioMain">
+        <label for="" style="position: absolute;">
+            Piano selezionato:
+        </label>
+        <app-piano-studio [SettaComponente]='elementoSelezionato' (onFineSessione)='FineSessione($event)'
+            (onModificaPianoStudio)='ModificaSessione($event)'>
+        </app-piano-studio>
+    </div>
+</div>
+
+<!-- <div class="grid-container-listaPianiStudio">
+    <div class="listaPianiStudioMenu">
+        <label for="">Lista piani studio</label>
+    </div>
+    <div class="listaPianiStudioMain">
+        <div class="gridContainePianiStudio">
+            <div class="pianiStudioHeader">
+                header
+            </div>
+            <div class="pianiStudioMenu">
+                manu
+            </div>
+            <div class="pianiStudioMain">
+                main
+            </div>
+        </div>
+    </div>
+</div> -->

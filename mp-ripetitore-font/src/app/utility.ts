@@ -86,12 +86,40 @@ export class ListaSessioniStudio extends Array<ISessioneStudio> implements IList
         if (item) {
             for (let index = 0; index < item.length; index++) {
                 const element = item[index];
-                this.AggiungiNuovoPiano(<ISessioneStudio><any>element);
+                this.AggiungiNuovaSessione(<ISessioneStudio><any>element);
             }
         }
     }
 
-    AggiungiNuovoPiano(item: ISessioneStudio) {
+    async AggiungiNuovaSessione(item: ISessioneStudio) {
+
+        try {
+            const tmp = await superagent.post('localhost:8080/api/ListaPianiStudio/AggiungiNuovoPiano')
+                .send(item);
+        } catch (error) {
+            console.log(error);
+        }
+
+        if (!this.EsistoSessioniAperte()) {
+            this.push(new SessioneStudio(item));
+            return true;
+        }
+        else throw new Error("Sessioni aperte");
+    }
+
+    async ModificaSessione(index: number, item: ISessioneStudio) {
+        try {
+            const tmp = await superagent.post('localhost:8080/api/ListaPianiStudio/AggiungiNuovoPiano')
+                .send(item);
+        } catch (error) {
+            console.log(error);
+        }
+
+        this[index].Setta(item);
+        return true;
+    }
+
+    EsistoSessioniAperte() {
 
         let posso = true;
         for (let index = 0; index < this.length && posso == true; index++) {
@@ -99,31 +127,10 @@ export class ListaSessioniStudio extends Array<ISessioneStudio> implements IList
             if (element.dataFine == undefined) posso = false;
         }
         if (posso) {
-            this.push(new SessioneStudio(item));
-            return true;
+            return false;
         }
-        else throw new Error("Sessioni aperte");
-
-        return false;
+        return true;
     }
-
-    /* static AggiungiNuovoPiano(item: ISessioneStudio, vet: ListaSessioniStudio) {
-        let posso = true;
-        for (let index = 0; index < vet.length && posso == true; index++) {
-            const element = vet[index];
-            if (element.dataFine == undefined) posso = false;
-        }
-        if (posso) {
-            vet.push(new SessioneStudio(item));
-            return vet;
-        }
-        else throw new Error("Sessioni aperte");
-    } */
-
-    ModificaSessione(index: number, item: ISessioneStudio) {
-        this[index].Setta(item);
-    }
-
 }
 
 
@@ -148,8 +155,15 @@ export class ListaPianiStudio extends Array<IPianoStudio> implements IListaPiani
             return false;
         }
     }
-    ModificaPiano(index: number, item: IPianoStudio) {
+    async ModificaPiano(index: number, item: IPianoStudio) {
+        try {
+            const tmp = await superagent.post('localhost:8080/api/ListaPianiStudio/ModificaPiano')
+                .send(item);
+        } catch (error) {
+            console.log(error);
+        }
         this[index].Setta(item);
+        return true;
     }
 
 }
@@ -192,7 +206,7 @@ export class PianoStudio implements IPianoStudio {
 
     AggiungiSessione(item: ISessioneStudio): boolean {
         try {
-            this.listaSessioniStudio.AggiungiNuovoPiano(item);
+            this.listaSessioniStudio.AggiungiNuovaSessione(item);
             return true;
         } catch (error) {
             console.log(error);
