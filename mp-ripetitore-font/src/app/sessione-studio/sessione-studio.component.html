@@ -15,7 +15,7 @@
 <div>
     <label for="">Titolo </label>
     <input type="text" name="" id="" [value]='titolo' [disabled]='timerInterno.terminato == true'
-        (keypress)="SetTitolo($event)">
+        (keypress)="SetTitolo($event)" (change)="SetTitolo($event)">
 </div>
 
 <div>

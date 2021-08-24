@@ -1,8 +1,9 @@
 
-import { PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
+import { PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, Entity, ManyToOne } from "typeorm";
 import { ValidateIf } from "class-validator";
 import { ListaSessioniStudio } from "./lista-sessioni-studio";
 import { IPianoStudio, ISessioneStudio, StrutturaPomodori, IListaSessioniStudio, ITimer } from "../../mp-classi/utility";
+import { ListaPianiStudio } from "./lista-piani-studio";
 
 export interface IInformazioniBasePianoStudio {
 
@@ -26,6 +27,8 @@ export class InformazioniBasePianoStudio {
     dataInizio: Date;
 }
 
+
+@Entity({ name: "PianoStudio" })
 export class PianoStudio implements IPianoStudio {
 
     @PrimaryGeneratedColumn()
@@ -51,6 +54,10 @@ export class PianoStudio implements IPianoStudio {
     listaParoleChiavi?: string[];
 
     timerInterno: ITimer;
+    
+    @ManyToOne(type => ListaPianiStudio, listaPianiStudio => listaPianiStudio.vettorePianoStudio, { nullable: false, eager: true, onDelete: 'CASCADE' })
+    @JoinColumn({ name: "fklistaPianiStudio" })
+    fklistaPianiStudio: ListaPianiStudio;
 
     constructor(item?: IPianoStudio) {
         this.Setta(item);

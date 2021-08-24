@@ -70,7 +70,14 @@ export class TimerStartStopComponent implements OnInit, ITimer {
       this.dataFine = new Date();
       if (this.numeroCicli >= 0)
         this.terminato = true;
-      this.onFineTimer.emit(this);
+      this.onFineTimer.emit({
+        count:this.count,
+        dataInizio:this.dataInizio,
+        numeroCicli:this.numeroCicli,
+        statoTimer:this.statoTimer,
+        terminato:this.terminato,
+        timer:this.timer
+      }/* this */);
     }
   }
   VerificaStatoTimerIsTerminato() {

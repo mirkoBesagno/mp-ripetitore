@@ -81,14 +81,27 @@ export class SessioneStudio implements ISessioneStudio {
 }
 export class ListaSessioniStudio extends Array<ISessioneStudio> implements IListaSessioniStudio {
 
-    constructor(item?: IListaSessioniStudio) {
+    constructor() {
+        super();
+    }
+    /* constructor(item?: IListaSessioniStudio) {
         super();
         if (item) {
             for (let index = 0; index < item.length; index++) {
                 const element = item[index];
-                this.AggiungiNuovaSessione(<ISessioneStudio><any>element);
+                this.AggiungiNuovaSessione(element);
             }
         }
+    } */
+
+    async Setta(item: IListaSessioniStudio) {
+        if (item) {
+            for (let index = 0; index < item.length; index++) {
+                const element = item[index];
+                await this.AggiungiNuovaSessione(element);
+            }
+        }
+        return true;
     }
 
     async AggiungiNuovaSessione(item: ISessioneStudio) {
@@ -134,10 +147,12 @@ export class ListaSessioniStudio extends Array<ISessioneStudio> implements IList
 }
 
 
-export class ListaPianiStudio extends Array<IPianoStudio> implements IListaPianiStudio {
+export class ListaPianiStudio implements IListaPianiStudio {
+
+    vettorePianoStudio: Array<IPianoStudio> = [];
 
     constructor() {
-        super();
+        /* super(); */
     }
 
 
@@ -149,7 +164,9 @@ export class ListaPianiStudio extends Array<IPianoStudio> implements IListaPiani
             console.log(error);
         }
         try {
-            this.push(new PianoStudio(item));
+            const tmp = new PianoStudio();
+            await tmp.Setta(item);
+            this.vettorePianoStudio.push(tmp);
             return true;
         } catch (error) {
             return false;
@@ -166,12 +183,19 @@ export class ListaPianiStudio extends Array<IPianoStudio> implements IListaPiani
         return true;
     }
 
+    Setta(item: IListaPianiStudio) {
+        for (let index = 0; index < item.vettorePianoStudio.length; index++) {
+            const element = item[index];
+            this.AggiungiNuovoPiano(element);
+        }
+    }
+
 }
 export class PianoStudio implements IPianoStudio {
 
     dataInizio: Date;
 
-    listaSessioniStudio: IListaSessioniStudio;
+    listaSessioniStudio: IListaSessioniStudio = new ListaSessioniStudio();
 
     listaParoleChiavi?: string[];
 
@@ -193,20 +217,22 @@ export class PianoStudio implements IPianoStudio {
         }
     }
 
-    Setta(item: IPianoStudio) {
+    async Setta(item: IPianoStudio) {
         this.dataFine = item.dataFine;
         this.dataInizio = item.dataInizio;
         this.listaParoleChiavi = item.listaParoleChiavi;
-        this.listaSessioniStudio = item.listaSessioniStudio ?? new ListaSessioniStudio();
+        //this.listaSessioniStudio = new ListaSessioniStudio(item.listaSessioniStudio);
+        this.listaSessioniStudio = new ListaSessioniStudio();
+        await this.listaSessioniStudio.Setta(item.listaSessioniStudio);
         this.timerInterno = item.timerInterno;
         this.titoloOpera = item.titoloOpera;
         this.titoloGenerale = item.titoloGenerale;
         return true;
     }
 
-    AggiungiSessione(item: ISessioneStudio): boolean {
+    async AggiungiSessione(item: ISessioneStudio): Promise<boolean> {
         try {
-            this.listaSessioniStudio.AggiungiNuovaSessione(item);
+            await this.listaSessioniStudio.AggiungiNuovaSessione(item);
             return true;
         } catch (error) {
             console.log(error);

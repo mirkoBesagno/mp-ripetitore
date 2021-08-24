@@ -183,7 +183,7 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     //await this.listaSessioniStudio.ModificaSessione(this.indice,item);
 
     await this.elementoSelezionato.Setta(item);
-    this.Salva();
+    await this.Salva();
   }
 
   switch1 = false;
@@ -204,11 +204,14 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
 
   @Output() onModificaPianoStudio = new EventEmitter<IPianoStudio>();
 
-  Setta(item: IPianoStudio) {
+  async Setta(item: IPianoStudio) {
+    this.switch1=false;
+    this.switch2 = false;
     this.dataFine = item.dataFine;
     this.dataInizio = item.dataInizio;
     this.listaParoleChiavi = item.listaParoleChiavi;
-    this.listaSessioniStudio = new ListaSessioniStudio(item.listaSessioniStudio) ?? new ListaSessioniStudio();
+    this.listaSessioniStudio = new ListaSessioniStudio();
+    await this.listaSessioniStudio.Setta(item.listaSessioniStudio);
     this.timerInterno = item.timerInterno;
     this.titoloOpera = item.titoloOpera;
     this.titoloGenerale = item.titoloGenerale;
@@ -256,7 +259,13 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
       this.timerInterno.terminato = true;
     }
   } */
-  Salva() {
-    this.onFineSessione.emit(new PianoStudio(this));
+  async Salva() {
+    const tmp = new PianoStudio();
+    await tmp.Setta(this);
+    this.onFineSessione.emit(tmp);
+  }
+  async ClickFineSessione(){
+    this.dataFine = new Date();
+    await this.Salva();    
   }
 }

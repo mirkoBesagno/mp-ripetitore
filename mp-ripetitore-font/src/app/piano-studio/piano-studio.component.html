@@ -70,7 +70,7 @@
                 <label for="" *ngIf='dataFine != undefined' style="margin-left: 10px; margin-right: 10px;">Non puoi
                     terminare</label>
                 <ng-template #popTerminaSessioneContent>
-                    <button>Termina studio</button>
+                    <button (click)='ClickFineSessione()'>Termina studio</button>
                     <div>
                         <label for="">Commento finale</label>
                         <textarea name="" id="" cols="30" rows="10"></textarea>

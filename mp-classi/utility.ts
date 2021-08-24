@@ -11,9 +11,15 @@ import { Tracing } from "trace_events";
 export interface IListaSessioniStudio extends Array<ISessioneStudio> {
     AggiungiNuovaSessione(item: ISessioneStudio): boolean | Promise<boolean>;
     ModificaSessione(index: number, item: ISessioneStudio): boolean | Promise<boolean>;
-
+    Setta(item: IListaSessioniStudio): boolean | Promise<boolean>;
 }
-export interface IListaPianiStudio extends Array<IPianoStudio> {
+export interface IArray<T>{
+    
+    vettorePianoStudio: Array<IPianoStudio>;
+}
+export interface IListaPianiStudio /* extends Array<IPianoStudio> */ {
+    
+    vettorePianoStudio: Array<IPianoStudio>;
     AggiungiNuovoPiano(item: IPianoStudio): boolean | Promise<boolean>;
     ModificaPiano(index: number, item: IPianoStudio): boolean | Promise<boolean>;
 }
@@ -49,7 +55,7 @@ export interface ISessioneStudio {
 
     timerInterno: ITimer,
 
-    Setta(item: ISessioneStudio): boolean;
+    Setta(item: ISessioneStudio): boolean | Promise<boolean>;
 }
 
 export interface IPianoStudio {
@@ -65,7 +71,7 @@ export interface IPianoStudio {
     timerInterno: ITimer;
     AggiungiSessione(item: ISessioneStudio): boolean | Promise<boolean>;
     StrutturaPomodotoToString(item: StrutturaPomodori): string;
-    Setta(item: IPianoStudio): boolean;
+    Setta(item: IPianoStudio): boolean | Promise<boolean>;
 }
 
 export type StatoTimer = 'start' | 'stop' | 'terminato' | 'vuoto';

@@ -1,8 +1,10 @@
 
-import { PrimaryGeneratedColumn, Column } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Entity } from "typeorm";
 import { ValidateIf } from "class-validator";
 import { ISessioneStudio, ITimer, StrutturaPomodori } from "../../mp-classi/utility";
+import { Timer } from "./timer";
 
+@Entity({ name: "SessioneStudio" })
 export class SessioneStudio implements ISessioneStudio {
 
     @PrimaryGeneratedColumn()
@@ -22,8 +24,9 @@ export class SessioneStudio implements ISessioneStudio {
     @Column('timestamp', { name: 'commentoConciso' })
     commentoConciso: string;
     strutturaPomodoro: StrutturaPomodori;
+    
     @Column('timestamp', { name: 'timerInterno' })
-    timerInterno: ITimer = {
+    timerInterno: Timer = {
         statoTimer: false,
         count: 0,
         numeroCicli: 0,

@@ -1,7 +1,7 @@
 
 
 
-import { getRepository } from "typeorm";
+import { Entity, getRepository, PrimaryGeneratedColumn } from "typeorm";
 import { IListaSessioniStudio, ISessioneStudio } from "../../mp-classi/utility";
 import { SessioneStudio } from "./sessione-studio";
 
@@ -9,8 +9,12 @@ import { SessioneStudio } from "./sessione-studio";
 
 } */
 
+@Entity({ name: "ListaSessioniStudio" })
 export class ListaSessioniStudio extends Array<ISessioneStudio> implements IListaSessioniStudio {
 
+    @PrimaryGeneratedColumn()
+    id: string;
+    
     async CreaNuovoPianoStudio(): Promise<ISessioneStudio | Error> {
         try {
             const item = new SessioneStudio();
@@ -40,7 +44,7 @@ export class ListaSessioniStudio extends Array<ISessioneStudio> implements IList
 
         return false;
     }
-    
+
     ModificaSessione(index: number, item: ISessioneStudio) {
         this[index].Setta(item);
         return true;

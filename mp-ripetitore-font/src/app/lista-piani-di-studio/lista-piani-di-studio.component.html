@@ -1,7 +1,7 @@
 <label for="">Lista piani studio</label>
 <div>
     <ul id="myUL" style="font-size: small;">
-        <li *ngFor="let piano of ListaPianiStudio; let i=index;" (click)="onClickMenu($event)">
+        <li *ngFor="let piano of vettorePianoStudio; let i=index;" (click)="onClickMenu($event)">
             <button title="clicca per selezionare il piano" (click)="SelezionaPianoStudio(piano, i);"
                 [ngbPopover]="popVistaTemporaneaPianoStudioContent" [popoverTitle]="popVistaTemporaneaPianoStudioTitle"
                 triggers="mouseenter:mouseleave" placement="right-top" (mouseenter)="elementoTmp= piano"
@@ -31,7 +31,7 @@
                         <input type="text" name="" [value]="nuovoElemento.titoloOpera"
                             (change)='nuovoElemento.titoloOpera = $event.srcElement.value'>
                     </div>
-                    <button (click)="AggiungiPianoStudio()">Aggiungi</button>
+                    <button (click)="AggiungiNuovoPiano()">Aggiungi</button>
                 </ng-template>
                 <ng-template #popAggiungiPianoTitle>Aggiungi nuovo piano Studio</ng-template>
             </button>

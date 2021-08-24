@@ -88,7 +88,8 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
   IntercettaFineTimer(item: ITimer) {
     this.dataFine = new Date();
     this.timerInterno = item;
-    this.onFineSessione.emit(this);
+    const tmp = new SessioneStudio(this);
+    this.onFineSessione.emit(tmp/* this */);
   }
 
   @Output() onFineSessione = new EventEmitter<ISessioneStudio>();
@@ -128,6 +129,7 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
     this.commentoConciso = item.srcElement.value; //event.srcElment.value
   }
   Salva() {
-    this.onFineSessione.emit(this);
+    const tmp = new SessioneStudio(this);
+    this.onFineSessione.emit(tmp/* this */);
   }
 }
