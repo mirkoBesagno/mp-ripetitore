@@ -4,16 +4,43 @@ import { IInterazioneVettoriale, ListaPianiStudio, PianoStudio } from '../utilit
 
 import * as superagent from "superagent";
 
-@Component({
-  templateUrl: './persona.component.html',
-  styleUrls: ['./persona.component.css']
-})
-export class PersonaComponent implements OnInit, IInterazioneVettoriale<IPianoStudio>, IPersona {
+
+export class Persona implements IPersona {
 
   username: string;
   password: string;
   listaPianiStudio: IListaPianiStudio = undefined;
   listaRipetizioni: IListaRipetizioni = undefined;
+
+  async AggiungiPianoStudio(item: IPianoStudio) {
+    try {
+      await this.listaPianiStudio.AggiungiNuovoPiano(item);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async ModificaPianoStudio(indice: number, item: IPianoStudio) {
+    try {
+
+      console.log('modifica sessione');
+      console.log(item);
+      await this.listaPianiStudio.ModificaPiano(indice, item);
+      console.log('dhdjdj');
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+}
+
+@Component({
+  templateUrl: './persona.component.html',
+  styleUrls: ['./persona.component.css']
+})
+export class PersonaComponent extends Persona implements OnInit, IInterazioneVettoriale<IPianoStudio>, IPersona  {
 
   /* public get ListaPianiStudio(): ListaPianiStudio {
     return this.listaPianiStudio;
@@ -21,7 +48,7 @@ export class PersonaComponent implements OnInit, IInterazioneVettoriale<IPianoSt
 
 
   constructor() {
-
+    super();
     this.Setta();
 
 
@@ -183,7 +210,7 @@ export class PersonaComponent implements OnInit, IInterazioneVettoriale<IPianoSt
   }
   async AggiungiPianoStudio(item: IPianoStudio) {
     try {
-      await this.listaPianiStudio.AggiungiNuovoPiano(item);
+      super.AggiungiPianoStudio(item);
       return true;
     } catch (error) {
       console.log(error);
@@ -203,8 +230,8 @@ export class PersonaComponent implements OnInit, IInterazioneVettoriale<IPianoSt
       await this.listaPianiStudio.ModificaPiano(this.indice, item);//[this.indice] = item;
     //this.listaPianiStudio = this.listaPianiStudio;
     this.elementoModificato = {
-      index:this.indice,
-      piano:this.elementoSelezionato
+      index: this.indice,
+      piano: this.elementoSelezionato
     }
     /* this.indiceTmp = this.Indice;
     this.elementoSelezionato = undefined; */
