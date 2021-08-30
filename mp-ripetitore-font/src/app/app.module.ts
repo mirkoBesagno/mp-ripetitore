@@ -13,6 +13,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatGridListModule, MatGridTile, MatGridList } from "@angular/material/grid-list";
 import { PersonaComponent } from './persona/persona.component';
+import { ListaRipetizioniComponent } from './lista-ripetizioni/lista-ripetizioni.component';
+import { ListaSessioneStudioComponent } from './lista-sessione-studio/lista-sessione-studio.component';
 /* import { TreeviewModule } from 'ngx-treeview';
 import { TreeModule } from '@circlon/angular-tree-component';
  */
@@ -26,7 +28,9 @@ import { TreeModule } from '@circlon/angular-tree-component';
     PomodoroComponent,
     TimerStartStopComponent,
     ListaPianiDiStudioComponent,
-    PersonaComponent
+    PersonaComponent,
+    ListaRipetizioniComponent,
+    ListaSessioneStudioComponent
   ],
   imports: [
     BrowserModule,

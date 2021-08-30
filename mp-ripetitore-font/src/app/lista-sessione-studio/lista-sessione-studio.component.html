@@ -1,0 +1,57 @@
+<div>
+    <div *ngIf='vettoreSessioniStudio.length != undefined'>
+        {{vettoreSessioniStudio.length}}
+        <ul id="myUL" style="padding: 11px;">
+            <li *ngFor="let sessione of VettoreSessioniStudio; let i=index;" (click)="onClickMenu($event)">
+                <!-- <samp>{{sessione.titolo}} : {{sessione.dataInizio}}</samp> -->
+                <button title="clicca per selezionare la sessione"
+                    (click)="SelezionaSessioneStudio(sessione, i); Indice=i;">
+                    {{sessione.titolo}}
+                </button>
+                <ul class="nested" style="font-size: x-small;">
+                    <!-- *ngFor="let item of sessione; let i=index;" -->
+                    <li>
+                        <samp>{{sessione.dataInizio | date:'dd/MM/yyyy'}} : {{sessione.dataFine |
+                            date:'dd/MM/yyyy'}}</samp>
+                    </li>
+                    <li>
+                        <samp>{{StrutturaPomodotoToString(sessione.strutturaPomodoro)}}</samp>
+                    </li>
+                    <li>
+                        <samp>{{sessione.commentoConciso}}</samp>
+                    </li>
+                </ul>
+            </li>
+
+            <li *ngIf='nuovoElemento != undefined && chiusa==false'>
+                <button [ngbPopover]="popAggiungiSessioneContent" [popoverTitle]="popAggiungiSessioneTitle"
+                    placement="right" [autoClose]="false" triggers="manual" #aggiungiSessione="ngbPopover"
+                    (click)="switch == false ? aggiungiSessione.open() : aggiungiSessione.close(); switch=!switch;">
+                    Aggiungi nuova sessione
+                    <ng-template #popAggiungiSessioneContent>
+
+                        <div>
+                            <!-- <label for="">Titolo </label>
+                            <input type="text" name="" id="" [value]='titolo'
+                                (keypress)="SetTitolo($event.srcElement.value)" [value]="GetTitolo()"
+                                (change)='SetTitolo($event.srcElement.value)'> -->
+                            <label for="">Pomodoro </label>
+                            <select name="cars" id="pomodoroselezionato" (change)="SelezionaPomodoro($event)">
+                                <option value="" selected disabled hidden>...</option>
+                                <option value="I">I (20 - 2 * 2 - 20)</option>
+                                <option value="II">II (35 - 2 * 2 - 20)</option>
+                                <option value="III">III (40 - 2 * 2 - 20)</option>
+                            </select>
+                        </div>
+
+                        <button (click)="AggiungiNuovaSessione()">Aggiungi</button>
+                    </ng-template>
+                    <ng-template #popAggiungiSessioneTitle>Aggiungi nuova sessione</ng-template>
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div *ngIf='vettoreSessioniStudio.length == undefined'>
+        non c'è il vettore sessione
+    </div>
+</div>

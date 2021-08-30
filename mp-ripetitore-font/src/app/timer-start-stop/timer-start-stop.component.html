@@ -1,13 +1,29 @@
-<label for="">Timer</label>
-<input type="time" [value]="timer" [disabled]='terminato == true'>
-<span *ngIf='terminato == false'>
-    <button (click)='StartTimer()' [disabled]='determinaDisabilita == true'>start</button>
-    <!-- [disabled]='GetIsDisability(true)' -->
-    <button (click)='StopTimer()' [disabled]='determinaDisabilita == false'>stop</button>
-</span>
-<span *ngIf='terminato == true'>
-    Timer disattivato
-</span>
-<span *ngIf='terminato == false'>
+<div style=" display: inline-block; padding: 0%;margin: 0%;">
+    <label for="" style="font-size: xx-small; padding: 0%;margin: 0%;">Timer</label>
+    <br>
+    <!-- <input type="time" [value]="timer" [disabled]='terminato == true'> -->
+    <div *ngIf='terminato == false'>
+        {{timer}}
+    </div>
+    <div *ngIf='terminato == true'>
+        <label for="" style="font-size: x-small; padding: 0%;margin: 0%;">
+            Timer disattivato
+        </label>
+    </div>
+</div>
+
+<div *ngIf='terminato == false' style="display: inline-block; ">
+    <ul style="padding-left: 12px;">
+        <li>
+            <button (click)='StartTimer()' [disabled]='determinaDisabilita == true'
+                style="font-size: x-small; padding: 0%;margin: 0%;">start</button>
+        </li>
+        <li>
+            <button (click)='StopTimer()' [disabled]='determinaDisabilita == false'
+                style="font-size: x-small; padding: 0%;margin: 0%;">stop</button>
+        </li>
+    </ul>
+</div>
+<span *ngIf='terminato == false' style="font-size: x-small; padding: 0%;margin: 0%;">
     {{count}} : {{numeroCicli}}
 </span>

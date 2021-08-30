@@ -1,14 +1,12 @@
-<label for="">Lista piani studio</label>
-{{vettorePianoStudio.length}}
-{{indiceTmp}}
+<label for="">Lista ripetizioni</label>
 <div>
     <ul id="myUL" style="font-size: small; padding: 11px;">
-        <li *ngFor="let piano of VettorePianoStudio; let i=index;">
-            <button title="clicca per selezionare il piano" (click)="SelezionaPianoStudio(piano, i);"
+        <li *ngFor="let ripetizione of vettoreRipetizioniStudio; let i=index;" (click)="onClickMenu($event)">
+            <button title="clicca per selezionare il ripetizione" (click)="SelezionaPianoStudio(ripetizione, i);"
                 [ngbPopover]="popVistaTemporaneaPianoStudioContent" [popoverTitle]="popVistaTemporaneaPianoStudioTitle"
-                triggers="mouseenter:mouseleave" placement="right-top" (mouseenter)="elementoTmp= piano"
+                triggers="mouseenter:mouseleave" placement="right-top" (mouseenter)="elementoTmp= ripetizione"
                 container="body">
-                {{piano.titoloOpera}} : {{piano.dataInizio | date:'dd/MM/yyyy'}}
+                {{ripetizione.titoloOpera}} : {{ripetizione.dataInizio | date:'dd/MM/yyyy'}}
             </button>
             <ng-template #popVistaTemporaneaPianoStudioContent>
                 <p>titolo : {{elementoTmp.titoloOpera}}</p>
@@ -18,9 +16,10 @@
             <ng-template #popVistaTemporaneaPianoStudioTitle>Piano studio</ng-template>
         </li>
         <li>
-            <button [ngbPopover]="popAggiungiPianoContent" [popoverTitle]="popAggiungiPianoTitle" placement="right"
-                [autoClose]="false" triggers="manual" #aggiungiPiano="ngbPopover"
-                (click)="switch == false ? aggiungiPiano.open() : aggiungiPiano.close(); switch=!switch;">
+            <button [ngbPopover]="popAggiungiPianoContent" [popoverTitle]="popAggiungiPianoTitle"
+             placement="right"
+                [autoClose]="false" triggers="manual" #aggiungiIRipetizione="ngbPopover"
+                (click)="switch == false ? aggiungiIRipetizione.open() : aggiungiIRipetizione.close(); switch=!switch;">
                 Aggiungi nuovo piano
                 <ng-template #popAggiungiPianoContent>
                     <div>

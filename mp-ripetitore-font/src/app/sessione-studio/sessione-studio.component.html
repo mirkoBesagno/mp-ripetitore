@@ -14,13 +14,13 @@
 
 <div>
     <label for="">Titolo </label>
-    <input type="text" name="" id="" [value]='titolo' [disabled]='timerInterno.terminato == true'
+    <input type="text" name="" id="" [value]='titolo'
         (keypress)="SetTitolo($event)" (change)="SetTitolo($event)">
 </div>
 
 <div>
     <label for="">Commento conciso</label>
     <br>
-    <textarea name="" id="" cols="30" rows="10" [value]='commentoConciso' [disabled]='timerInterno.terminato == true'
+    <textarea name="" id="" cols="30" rows="10" [value]='commentoConciso'
         (keypress)="SetCommentoConciso($event)"></textarea>
 </div>

@@ -12,6 +12,17 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
   IListaPianiStudio {
 
   vettorePianoStudio: Array<IPianoStudio> = new Array<PianoStudio>();
+
+  public get VettorePianoStudio(): Array<IPianoStudio> {
+    if (this.vettorePianoStudio.length > 0)
+      console.log('');
+    if (this.vettorePianoStudio.length > 1)
+      console.log('');
+    if (this.vettorePianoStudio.length > 2)
+      console.log('');
+    return this.vettorePianoStudio;
+  }
+
   /* listaPianiStudio: ListaPianiStudio = new ListaPianiStudio();
 
   public get ListaPianiStudio(): ListaPianiStudio {
@@ -22,16 +33,18 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
   elementoSelezionato: IPianoStudio = undefined;
   elementoTmp: IPianoStudio = undefined;
 
+  indiceTmp = -1;
+
   switch = false;
   constructor() {
   }
-  Setta(item: IListaPianiStudio) {
+  async Setta(item: IListaPianiStudio) {
     //this.listaPianiStudio = new ListaPianiStudio();
-    this.vettorePianoStudio = new Array<IPianoStudio>();
+    this.vettorePianoStudio = new Array<PianoStudio>();
     for (let index = 0; index < item.vettorePianoStudio.length; index++) {
       const element = item.vettorePianoStudio[index];
       //this.listaPianiStudio.AggiungiNuovoPiano(element);
-      this.AggiungiNuovoPiano(element);
+      await this.AggiungiNuovoPiano(element);
     }
     return true;
   }
@@ -54,17 +67,28 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
     }
   }
 
+  @Input()
+  set ModificaElementoSpecifico(item: { piano: IPianoStudio, index: number }) {
+    console.log('sono in input !!!');
+    this.vettorePianoStudio[item.index].Setta(item.piano);
+  }
   ngOnInit(): void {
     this.nuovoElemento = new PianoStudio();
+    this.nuovoElemento.timerInterno.terminato = false;
   }
 
-  SelezionaPianoStudio(item: IPianoStudio, index?: number) {
+  async SelezionaPianoStudio(item: IPianoStudio, index?: number) {
     console.log('seleziono');
     //this.elementoSelezionato.Setta(item);
-    this.elementoSelezionato = item;
+    /* this.elementoSelezionato = item; */
+    this.elementoSelezionato = new PianoStudio();
+    await this.elementoSelezionato.Setta(item);
+
+    this.indiceTmp = index;
+
     this.onSelezionaPianoStudio.emit({
       index: index,
-      piano: item
+      piano: this.elementoSelezionato
     });
   }
 
@@ -82,8 +106,13 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
   }
-  AggiungiNuovoPiano(item?: IPianoStudio): boolean {
-    if (item == undefined) item = this.nuovoElemento;
+  async AggiungiNuovoPiano(item?: IPianoStudio): Promise<boolean> {
+    if (this.nuovoElemento)
+      this.nuovoElemento.timerInterno.dataFine = undefined;
+    if (item == undefined && this.nuovoElemento != undefined)
+      item = this.nuovoElemento;
+    if (item == undefined)
+      console.log('ciao');
     /* try {
       const tmp = await superagent.post('localhost:8080/api/ListaPianiStudio/AggiungiNuovoPiano')
         .send(item);
@@ -91,10 +120,12 @@ export class ListaPianiDiStudioComponent implements OnInit, IInterazioneVettoria
       console.log(error);
     } */
     try {
-      const tmp = new PianoStudio(item);
+      const tmp = new PianoStudio();
+      await tmp.Setta(item);
       this.vettorePianoStudio.push(tmp);
       this.onAggiungiPianoStudio.emit(tmp);
       this.nuovoElemento = new PianoStudio();
+      this.nuovoElemento.timerInterno.terminato = false;
       (<any>document.getElementById('pomodoroselezionato')).selectedIndex = 0;
       return true;
     } catch (error) {

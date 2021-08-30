@@ -4,6 +4,7 @@ import { ValidateIf } from "class-validator";
 import { ListaSessioniStudio } from "./lista-sessioni-studio";
 import { IPianoStudio, ISessioneStudio, StrutturaPomodori, IListaSessioniStudio, ITimer } from "../../mp-classi/utility";
 import { ListaPianiStudio } from "./lista-piani-studio";
+import { Timer } from "./timer";
 
 export interface IInformazioniBasePianoStudio {
 
@@ -48,11 +49,13 @@ export class PianoStudio implements IPianoStudio {
     dataFine?: Date;
 
     @OneToOne(type => ListaSessioniStudio, { nullable: false, eager: true, cascade: true, onDelete: 'CASCADE' })
-    @JoinColumn({ name: "fkCredenzialiLogin" })
+    @JoinColumn({ name: "listaSessioniStudio" })
     listaSessioniStudio: IListaSessioniStudio;
 
     listaParoleChiavi?: string[];
 
+    @OneToOne(type => Timer, { nullable: false, eager: true, cascade: true, onDelete: 'CASCADE' })
+    @JoinColumn({ name: "timerInterno" })
     timerInterno: ITimer;
     
     @ManyToOne(type => ListaPianiStudio, listaPianiStudio => listaPianiStudio.vettorePianoStudio, { nullable: false, eager: true, onDelete: 'CASCADE' })

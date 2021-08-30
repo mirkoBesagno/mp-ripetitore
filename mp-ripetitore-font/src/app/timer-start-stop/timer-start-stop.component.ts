@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ITimer } from '../../../../mp-classi/utility';
 
-
 @Component({
   selector: 'app-timer-start-stop',
   templateUrl: './timer-start-stop.component.html',
@@ -24,24 +23,46 @@ export class TimerStartStopComponent implements OnInit, ITimer {
   terminato = false;
 
   @Output() onFineTimer = new EventEmitter<ITimer>();
+
+  dataTmp = new Date();
   StartTimer() {
+    this.dataTmp = new Date();
     if (this.statoTimer == false)
       if (this.count < this.numeroCicli || this.numeroCicli < 0) {
         this.intervallo = setInterval(() => {
+
+          const dataOra = new Date().getTime();
+          const temp = this.dataTmp.getTime();
+
+          let millisecondi = 0;
+          let secondi = 0;
+          let minuti = 0;
+          let ore = 0;
+
+          const contatore = (dataOra - temp);
+
+          const x = this.CalcoloMillisecondi(contatore);
+          millisecondi = x.ritorno;
+          ore = Math.floor(x.resto / (60 * 60));
+          var div_for_min = x.resto % (60 * 60);
+          minuti = Math.floor(div_for_min / 60);
+          var div_for_sec = div_for_min % 60;
+          secondi = Math.ceil(div_for_sec);
+
+          this.timer = '';
           const tmp = new Date();
-          let sec = tmp.getSeconds() + '';
-          if (Number(sec) < 10 && Number(sec) != 0) sec = '0' + Number(sec);
-          else if (Number(sec) == 0) sec = '00';
+          if (String(secondi).length == 1) this.timer = this.timer + '0' + String(secondi);
+          else this.timer = this.timer + String(secondi);
+          this.timer = ':' + this.timer;
+          if (String(minuti).length == 1) this.timer = '0' + String(minuti) + this.timer;
+          else this.timer = String(minuti) + this.timer;
+          this.timer = ':' + this.timer;
+          if (String(ore).length == 1) this.timer = '0' + ore + this.timer;
+          else this.timer = ore + this.timer;
 
-          let min = tmp.getMinutes() + '';
-          if (Number(min) < 10 && Number(min) != 0) min = '0' + Number(min);
-          else if (Number(min) == 0) min = '00';
-
-          let ore = tmp.getHours() + '';
-          if (Number(ore) < 10 && Number(ore) != 0) ore = '0' + ore;
-          else if (Number(ore) == 0) ore = '00';
-
-          this.timer = ore + ':' + min + ':' + sec;
+          if (String(millisecondi).length == 1) this.timer = this.timer + '..00' + millisecondi;
+          else if (String(millisecondi).length == 2) this.timer = this.timer + '..0' + millisecondi;
+          else this.timer = this.timer + '..' + millisecondi;
 
           const tmp1 = tmp.getTime();
           const tmp2 = this.dataInizio.getTime()
@@ -58,6 +79,7 @@ export class TimerStartStopComponent implements OnInit, ITimer {
       alert('Stoppare prima');
     }
   }
+
   StopTimer() {
     if (this.intervallo != undefined)
       clearInterval(this.intervallo);
@@ -70,14 +92,16 @@ export class TimerStartStopComponent implements OnInit, ITimer {
       this.dataFine = new Date();
       if (this.numeroCicli >= 0)
         this.terminato = true;
-      this.onFineTimer.emit({
-        count:this.count,
-        dataInizio:this.dataInizio,
-        numeroCicli:this.numeroCicli,
-        statoTimer:this.statoTimer,
-        terminato:this.terminato,
-        timer:this.timer
-      }/* this */);
+      if (this.numeroCicli != -1)
+        this.onFineTimer.emit({
+          count: this.count,
+          dataInizio: this.dataInizio,
+          numeroCicli: this.numeroCicli,
+          statoTimer: this.statoTimer,
+          terminato: this.terminato,
+          timer: this.timer,
+          dataFine:undefined
+        });
     }
   }
   VerificaStatoTimerIsTerminato() {
@@ -97,7 +121,7 @@ export class TimerStartStopComponent implements OnInit, ITimer {
       this.timer = item.timer ?? '00:00:00';
       this.count = item.count ?? 0;
       this.terminato = item.terminato ?? false;
-      this.numeroCicli = item.numeroCicli ?? this.count;
+      this.numeroCicli = item.numeroCicli ?? 0;
     }
   }
 
@@ -110,5 +134,17 @@ export class TimerStartStopComponent implements OnInit, ITimer {
     else {
       return true;
     }
+  }
+
+  CalcoloMillisecondi(numeroDaDividere: number) {
+    let appoggio = numeroDaDividere / 1000; // divido per trovare quanti millisecondi ci sono
+    let restante = parseInt('' + appoggio); // prendo restante 
+    let ritorno = 0;
+    if ((appoggio + '').split('.').length > 0)
+      ritorno = Number((appoggio + '').split('.')[1]);
+    return {
+      ritorno: Number(ritorno),
+      resto: Number(restante)
+    };
   }
 }

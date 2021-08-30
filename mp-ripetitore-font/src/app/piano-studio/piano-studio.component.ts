@@ -1,6 +1,6 @@
 import { Component, Directive, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
-import { ISessioneStudio, StrutturaPomodori, IPianoStudio, ITimer } from '../../../../mp-classi/utility';
+import { ISessioneStudio, StrutturaPomodori, IPianoStudio, ITimer, IListaSessioniStudio } from '../../../../mp-classi/utility';
 import { formataDate, IInterazioneVettoriale, ListaSessioniStudio, PianoStudio } from '../utility';
 
 
@@ -17,12 +17,19 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     count: 0,
     numeroCicli: -1,
     dataInizio: new Date(),
-    terminato: false
+    terminato: false,
+    dataFine: undefined
   };
+
 
   dataInizio: Date = new Date(Date.now());
 
-  listaSessioniStudio: ListaSessioniStudio = new ListaSessioniStudio();
+  listaSessioniStudio: IListaSessioniStudio = new ListaSessioniStudio();
+
+  public get GetListaSessioniStudio(): IListaSessioniStudio {
+    return this.listaSessioniStudio;
+  }
+
 
   listaParoleChiavi?: string[];
 
@@ -42,7 +49,7 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     return this.titoloGenerale;
   }
 
-  sessioniAperte:boolean=false;
+  sessioniAperte: boolean = false;
 
   dataFine?: Date;
 
@@ -98,6 +105,8 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
         }
       };
       (<any>document.getElementById('pomodoroselezionato')).selectedIndex = 0;
+
+      this.mostra_nascondi_aggiungiSessione = false;
       return true;
     } catch (error) {
       console.log(error);
@@ -151,9 +160,15 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
   }
-  SelezionaSessioneStudio(item: ISessioneStudio) {
+  SelezionaSessioneStudio(item: {
+    piano: ISessioneStudio,
+    index: number
+  }) {
     console.log('seleziono');
-    this.elementoSelezionato = item;
+    this.elementoSelezionato = undefined;
+    setTimeout((tmp) => {
+      this.elementoSelezionato = tmp.piano;
+    }, 100, item);
   }
   StrutturaPomodotoToString(item: StrutturaPomodori): string {
     if (item && 'tipologia' in item) {
@@ -173,7 +188,7 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
       return 'undefined';
     }
   }
-  async FineSessione(item: ISessioneStudio) {
+  async IntercettaFineSessione(item: ISessioneStudio) {
     console.log(item);
     /* this.elementoSelezionato.dataFine = item.dataFine;
     this.elementoSelezionato.titolo = item.titolo;
@@ -183,38 +198,46 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     //await this.listaSessioniStudio.ModificaSessione(this.indice,item);
 
     await this.elementoSelezionato.Setta(item);
+    await this.listaSessioniStudio.ModificaSessione(this.indice, item);
     await this.Salva();
   }
 
-  switch1 = false;
-  switch2 = false;
+  mostra_nascondi_aggiungiSessione = false;
+  mostra_nascondi_terminaSessione = false;
 
   onClickMenu(item: any) {
     /* item.querySelector(".nested").classList.toggle("active");
     item.toggle("caret-down"); */
   }
 
+  ClickAggiungiSessione(item: any) {
+    console.log("ciao");
+
+  }
   IntercettaFineTimer(item: ITimer) {
     this.dataFine = new Date();
     this.timerInterno = item;
-    this.onFineSessione.emit(new PianoStudio(this));
+    this.onFinePiano.emit(new PianoStudio(this));
   }
 
-  @Output() onFineSessione = new EventEmitter<IPianoStudio>();
+  @Output() onFinePiano = new EventEmitter<IPianoStudio>();
 
   @Output() onModificaPianoStudio = new EventEmitter<IPianoStudio>();
 
   async Setta(item: IPianoStudio) {
-    this.switch1=false;
-    this.switch2 = false;
+    this.mostra_nascondi_aggiungiSessione = false;
+    this.mostra_nascondi_terminaSessione = false;
     this.dataFine = item.dataFine;
     this.dataInizio = item.dataInizio;
     this.listaParoleChiavi = item.listaParoleChiavi;
-    this.listaSessioniStudio = new ListaSessioniStudio();
-    await this.listaSessioniStudio.Setta(item.listaSessioniStudio);
-    this.timerInterno = item.timerInterno;
+    const tmp = new ListaSessioniStudio();
+    await tmp.Setta(item.listaSessioniStudio);
+    this.listaSessioniStudio = tmp;
+    this.timerInterno = item.timerInterno ?? { count: 0, dataInizio: new Date(), dataFine: undefined, numeroCicli: 0, statoTimer: false, terminato: false, timer: '00:00:00' };
     this.titoloOpera = item.titoloOpera;
     this.titoloGenerale = item.titoloGenerale;
+
+    if (this.dataFine != undefined && this.timerInterno.numeroCicli != -1 && this.timerInterno.terminato == false) this.timerInterno.terminato = true;
     return true;
   }
 
@@ -223,17 +246,20 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     console.log('sono in input !!!');
     this.elementoSelezionato = undefined;
     this.nuovoElemento = undefined;
+    this.listaSessioniStudio = undefined;
+    this.timerInterno = undefined;
     if (v) {
-      if (this.settato) {
-        this.onModificaPianoStudio.emit(new PianoStudio(this));
-        setTimeout((item: IPianoStudio) => {
-          //this.SettaPiano(item);
-          this.Setta(item)
-        }, 100, v);
-      }
-      else {
-        this.Setta(v);
-      }
+      setTimeout(async () => {
+        if (this.settato) {
+          await this.Setta(v);/* .finally(() => {
+          this.onModificaPianoStudio.emit(new PianoStudio(this));
+        }); */
+        }
+        else {
+          await this.Setta(v);
+        }
+      });
+
     }
 
     /* tmp.height = this.altezza;
@@ -262,10 +288,10 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
   async Salva() {
     const tmp = new PianoStudio();
     await tmp.Setta(this);
-    this.onFineSessione.emit(tmp);
+    this.onFinePiano.emit(tmp);
   }
-  async ClickFineSessione(){
+  async ClickFineSessione() {
     this.dataFine = new Date();
-    await this.Salva();    
+    await this.Salva();
   }
 }

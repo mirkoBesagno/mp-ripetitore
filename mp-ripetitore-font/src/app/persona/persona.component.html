@@ -1,14 +1,26 @@
 <div class="grid-container-listaPianiStudio" style="background-color: aliceblue;">
     <div class="listaPianiStudioMenu">
         <div style="height: 50%; width: 100%; overflow: scroll;">
-            <app-lista-piani-di-studio 
-            (onSelezionaPianoStudio)='SelezionaPianoStudio($event)'
-            [SettaComponente]='listaPianiStudio'></app-lista-piani-di-studio>
+            <div *ngIf='listaPianiStudio != undefined'>
+                <app-lista-piani-di-studio (onSelezionaPianoStudio)='SelezionaPianoStudio($event)'
+                    [SettaComponente]='listaPianiStudio' [ModificaElementoSpecifico]='elementoModificato'></app-lista-piani-di-studio>
+            </div>
+            <div *ngIf='listaPianiStudio == undefined'>
+                <label for="">listaPianiStudio indefinita</label>
+            </div>
         </div>
         <div style="height: 50%; width: 100%; overflow: scroll;">
-            <label for="">Lista ripetizioni</label>
+            <div *ngIf='listaRipetizioni != undefined'>
+                <app-lista-ripetizioni (onSelezionaRipetizioneStudio)='SelezionaRipetizioneStudio($event)'
+                    [SettaComponente]='listaRipetizioni'>
+                </app-lista-ripetizioni>
+            </div>
+            <div *ngIf='listaRipetizioni == undefined'>
+                <label for="">listaRipetizioniStudio indefinita</label>
+            </div>
+            <!-- <label for="">Lista ripetizioni</label>
             <div>
-                <ul>
+                <ul style="padding: 11px;">
                     <li>ddddd</li>
                     <li>dddasdsff</li>
                     <li>ddddd</li>
@@ -18,16 +30,23 @@
                     <li>ddddd</li>
                     <li>dddasdsff</li>
                 </ul>
-            </div>
+            </div> -->
         </div>
     </div>
     <div class="listaPianiStudioMain">
         <label for="" style="position: absolute;">
             Piano selezionato:
+            {{indice}}
         </label>
-        <app-piano-studio [SettaComponente]='elementoSelezionato' (onFineSessione)='FineSessione($event)'
-            (onModificaPianoStudio)='ModificaSessione($event)'>
-        </app-piano-studio>
+        <div *ngIf='elementoSelezionato != undefined' style="height: 100%;width: 100%;">
+            <app-piano-studio [SettaComponente]='elementoSelezionato' (onFinePiano)='FinePiano($event)'
+                (onModificaPianoStudio)='ModificaSessione($event)'>
+            </app-piano-studio>
+        </div>
+        <div *ngIf='elementoSelezionato == undefined'>
+            <br>
+            piano studio indefinito
+        </div>
     </div>
 </div>
 

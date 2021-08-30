@@ -27,7 +27,8 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
     count: 0,
     numeroCicli: 0,
     dataInizio: new Date(),
-    terminato: false
+    terminato: false, 
+    dataFine:undefined
   };
 
   constructor() { }
@@ -46,6 +47,7 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
     if (v) {
       if (this.settato) {
         this.onModificaSessioneStudio.emit(new SessioneStudio(this));
+        this.Azzera();
         setTimeout((item: ISessioneStudio) => {
           //this.SettaPiano(item);
           this.Setta(item)
@@ -56,6 +58,7 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
       }
     }
   }
+  
   Setta(item: ISessioneStudio):boolean {
     this.dataInizio = item.dataInizio ?? new Date();
     this.strutturaPomodoro = item.strutturaPomodoro ?? undefined;
@@ -66,6 +69,16 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
     this.timerInterno = item.timerInterno;
     this.dataFine = item.dataFine;
     return true;
+  }
+  Azzera(){    
+    this.dataInizio =  new Date();
+    this.strutturaPomodoro = undefined;
+    this.titolo = '';
+
+    this.commentoConciso = '';
+
+    this.timerInterno =undefined;
+    this.dataFine = undefined;
   }
   StrutturaPomodotoToString(item: StrutturaPomodori): string {
     if (item && 'tipologia' in item) {
@@ -128,8 +141,9 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
   SetCommentoConciso(item: any) {
     this.commentoConciso = item.srcElement.value; //event.srcElment.value
   }
-  Salva() {
-    const tmp = new SessioneStudio(this);
+  async Salva() {
+    const tmp = new SessioneStudio();
+    await tmp.Setta(this)
     this.onFineSessione.emit(tmp/* this */);
   }
 }
