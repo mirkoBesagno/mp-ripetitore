@@ -1,6 +1,8 @@
+<label for="">Lista sessione studio</label>
+{{vettoreSessioniStudio.length}}
+{{indice}}
 <div>
     <div *ngIf='vettoreSessioniStudio.length != undefined'>
-        {{vettoreSessioniStudio.length}}
         <ul id="myUL" style="padding: 11px;">
             <li *ngFor="let sessione of VettoreSessioniStudio; let i=index;" (click)="onClickMenu($event)">
                 <!-- <samp>{{sessione.titolo}} : {{sessione.dataInizio}}</samp> -->

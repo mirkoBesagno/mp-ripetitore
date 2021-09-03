@@ -1,176 +1,141 @@
 import { Component, OnInit } from '@angular/core';
-import { IListaPianiStudio, IPianoStudio, ISessioneStudio, IPersona, IRipetizioneStudio, IListaRipetizioni, ListaRipetizioni } from '../../../../mp-classi/utility';
-import { IInterazioneVettoriale, ListaPianiStudio, PianoStudio } from '../utility';
+import { Persona, IPersona } from "../../../../mp-classi/app/persona";
 
 import * as superagent from "superagent";
+import { ListaPianiStudio } from '../../../../mp-classi/app/lista-piani-studio';
+import { IPianoStudio, PianoStudio } from '../../../../mp-classi/app/piano-studio';
+import { ISessioneStudio } from '../../../../mp-classi/app/sessione-studio';
+import { IInterazioneVettoriale } from '../../../../mp-classi/utility';
 
 
-export class Persona implements IPersona {
-
-  username: string;
-  password: string;
-  listaPianiStudio: IListaPianiStudio = undefined;
-  listaRipetizioni: IListaRipetizioni = undefined;
-
-  async AggiungiPianoStudio(item: IPianoStudio) {
-    try {
-      await this.listaPianiStudio.AggiungiNuovoPiano(item);
-      return true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  }
-
-  async ModificaPianoStudio(indice: number, item: IPianoStudio) {
-    try {
-
-      console.log('modifica sessione');
-      console.log(item);
-      await this.listaPianiStudio.ModificaPiano(indice, item);
-      console.log('dhdjdj');
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-}
 
 @Component({
   templateUrl: './persona.component.html',
   styleUrls: ['./persona.component.css']
 })
-export class PersonaComponent extends Persona implements OnInit, IInterazioneVettoriale<IPianoStudio>, IPersona  {
-
-  /* public get ListaPianiStudio(): ListaPianiStudio {
-    return this.listaPianiStudio;
-  } */
-
+export class PersonaComponent extends Persona
+  implements OnInit, IInterazioneVettoriale<IPianoStudio>, IPersona {
 
   constructor() {
     super();
-    this.Setta();
+    setTimeout(async () => {
+      try {
+        const tmp = new ListaPianiStudio();
 
+        let piano = new PianoStudio();
 
-  }
-  async Setta() {
-    try {
-      const tmp = new ListaPianiStudio();
+        await piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'I', count: 2, struttura: [25, 5] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'lettura coscienza di zeno',
+          timerInterno: {
+            count: 2, numeroCicli: 2, timer: '00:00:00', statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        await piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'II', count: 4, struttura: [20, 5, 20, 5] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'lettura il socrate',
+          timerInterno: {
+            count: 4, numeroCicli: 4, timer: '00:00:00', statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        await piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'III', count: 4, struttura: [50, 10, 50, 10] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'lettura il capitale',
+          timerInterno: {
+            count: 4, numeroCicli: 4, timer: '00:00:00', statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        await piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'I', count: 2, struttura: [25, 5] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'lettura teste tonde teste a punta',
+          timerInterno: {
+            count: 2, numeroCicli: 2, timer: '00:00:00', statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        /* piano.timerInterno = {
+          count: 2, numeroCicli: 2, timer: '00:00:00', statoTimer: false, dataInizio: new Date(), terminato: true
+        }; */
+        piano.dataFine = new Date();
+        piano.titoloOpera = 'primo ooo iii';
+        piano.titoloGenerale = 'primo oooo';
+        piano.timerInterno = { timer: '00:00:00', dataInizio: new Date(), dataFine: undefined, terminato: true, statoTimer: false, numeroCicli: 0, count: 0 };
+        await tmp.AggiungiNuovoPiano(piano);
+        piano = new PianoStudio();
 
-      let piano = new PianoStudio();
+        await piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'I', count: 2, struttura: [25, 5] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'primo capitolo',
+          timerInterno: {
+            count: 2, numeroCicli: 2, timer: '00:00:00', statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        await piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'II', count: 4, struttura: [20, 5, 20, 5] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'secondo capitolo',
+          timerInterno: {
+            count: 4, numeroCicli: 4, timer: '00:00:00', statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        await piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'III', count: 4, struttura: [50, 10, 50, 10] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'terzo capitolo',
+          timerInterno: {
+            count: 4, numeroCicli: 4, timer: '00:00:00', statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        await piano.AggiungiSessione(<ISessioneStudio>{
+          dataInizio: new Date(), strutturaPomodoro:
+            { tipologia: 'I', count: 2, struttura: [25, 5] },
+          dataFine: new Date(),
+          commentoConciso: '',
+          titolo: 'quarto capitolo',
+          timerInterno: {
+            count: 2, numeroCicli: 2, timer: '00:00:00', statoTimer: false, dataInizio: new Date(), terminato: true
+          }
+        });
+        piano.titoloOpera = 'secondo ooo iiii';
+        piano.titoloGenerale = 'secodo ooo';
+        piano.timerInterno = { timer: '00:00:00', dataInizio: new Date(), dataFine: undefined, terminato: false, statoTimer: false, numeroCicli: -1, count: 0 };
+        await tmp.AggiungiNuovoPiano(piano);
+        //this.listaPianiStudio = lista;
+        console.log(this.listaPianiStudio);
+        tmp.elementoSelezionato = undefined;
+        tmp.nuovoElemento= undefined;
+        tmp.indice = 0;
+        this.listaPianiStudio = tmp;
+      } catch (er) {
+        console.log(er);
 
-      await piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'I', count: 2, struttura: [25, 5] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'lettura coscienza di zeno',
-        timerInterno: {
-          count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      await piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'II', count: 4, struttura: [20, 5, 20, 5] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'lettura il socrate',
-        timerInterno: {
-          count: 4, numeroCicli: 4, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      await piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'III', count: 4, struttura: [50, 10, 50, 10] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'lettura il capitale',
-        timerInterno: {
-          count: 4, numeroCicli: 4, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      await piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'I', count: 2, struttura: [25, 5] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'lettura teste tonde teste a punta',
-        timerInterno: {
-          count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      /* piano.timerInterno = {
-        count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-      }; */
-      piano.dataFine = new Date();
-      piano.titoloOpera = 'primo ooo iii';
-      piano.titoloGenerale = 'primo oooo';
-      piano.timerInterno = { timer: '00:00:00', dataInizio: new Date(), dataFine: undefined, terminato: true, statoTimer: false, numeroCicli: 0, count: 0 };
-      await tmp.AggiungiNuovoPiano(piano);
-      piano = new PianoStudio();
-
-      await piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'I', count: 2, struttura: [25, 5] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'primo capitolo',
-        timerInterno: {
-          count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      await piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'II', count: 4, struttura: [20, 5, 20, 5] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'secondo capitolo',
-        timerInterno: {
-          count: 4, numeroCicli: 4, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      await piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'III', count: 4, struttura: [50, 10, 50, 10] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'terzo capitolo',
-        timerInterno: {
-          count: 4, numeroCicli: 4, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      await piano.AggiungiSessione(<ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro:
-          { tipologia: 'I', count: 2, struttura: [25, 5] },
-        dataFine: new Date(),
-        commentoConciso: '',
-        titolo: 'quarto capitolo',
-        timerInterno: {
-          count: 2, numeroCicli: 2, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: true
-        }
-      });
-      piano.titoloOpera = 'secondo ooo iiii';
-      piano.titoloGenerale = 'secodo ooo';
-      piano.timerInterno = { timer: '00:00:00', dataInizio: new Date(), dataFine: undefined, terminato: false, statoTimer: false, numeroCicli: -1, count: 0 };
-      await tmp.AggiungiNuovoPiano(piano);
-      //this.listaPianiStudio = lista;
-      console.log(this.listaPianiStudio);
-      this.listaPianiStudio = tmp;
-    } catch (er) {
-      console.log(er);
-
-    }
+      }
+    });
   }
 
   nuovoElemento: IPianoStudio = undefined;
   elementoSelezionato: IPianoStudio = undefined;
-
   indice = 0;
+
   indiceTmp = 0;
-  public set Indice(v: number) {
-    this.indiceTmp = this.indice;
-    this.indice = v;
-  }
 
   async ngOnInit(): Promise<void> {
     /* try {
@@ -198,7 +163,7 @@ export class PersonaComponent extends Persona implements OnInit, IInterazioneVet
     }, 100);
   }
 
-  SelezionaRipetizioneStudio(item: { piano: IRipetizioneStudio, index: number }) {
+  SelezionaRipetizioneStudio(item: { piano: IPianoStudio, index: number }) {
     console.log('seleziono');
     //this.elementoSelezionato.Setta(item);
     this.elementoSelezionato = undefined;
@@ -208,33 +173,17 @@ export class PersonaComponent extends Persona implements OnInit, IInterazioneVet
         this.indice = item.index;
     }, 100);
   }
-  async AggiungiPianoStudio(item: IPianoStudio) {
-    try {
-      super.AggiungiPianoStudio(item);
-      return true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  }
 
   async FinePiano(item: IPianoStudio) {
     console.log('fine sessione');
     console.log(item);
-    /* this.elementoSelezionato.dataFine = item.dataFine;
-    this.elementoSelezionato.titolo = item.titolo;
-    this.elementoSelezionato.commentoConciso = item.commentoConciso; */
-    //this.elementoSelezionato = item;
     await this.elementoSelezionato.Setta(item);
     if (this.indice >= 0)
-      await this.listaPianiStudio.ModificaPiano(this.indice, item);//[this.indice] = item;
-    //this.listaPianiStudio = this.listaPianiStudio;
+      await this.listaPianiStudio.ModificaPiano(this.indice, item);
     this.elementoModificato = {
       index: this.indice,
       piano: this.elementoSelezionato
     }
-    /* this.indiceTmp = this.Indice;
-    this.elementoSelezionato = undefined; */
   }
 
   elementoModificato: { piano: IPianoStudio, index: number };
@@ -242,12 +191,7 @@ export class PersonaComponent extends Persona implements OnInit, IInterazioneVet
   async ModificaSessione(item: IPianoStudio) {
     console.log('modifica sessione');
     console.log(item);
-    /* this.elementoSelezionato.dataFine = item.dataFine;
-    this.elementoSelezionato.titolo = item.titolo;
-    this.elementoSelezionato.commentoConciso = item.commentoConciso; */
-    //this.elementoSelezionato = item;
-    await this.listaPianiStudio.ModificaPiano(this.indiceTmp, item);//[this.indiceTmp] = item;
-    //this.elementoSelezionato = undefined;
+    await this.listaPianiStudio.ModificaPiano(this.indiceTmp, item);
     console.log('dhdjdj');
 
   }

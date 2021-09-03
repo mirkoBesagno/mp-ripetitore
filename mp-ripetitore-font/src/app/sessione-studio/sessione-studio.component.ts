@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ISessioneStudio, ITimer, StrutturaPomodori } from '../../../../mp-classi/utility';
-import { SessioneStudio } from '../utility';
-
+import { ISessioneStudio, SessioneStudio } from '../../../../mp-classi/app/sessione-studio';
+import { StrutturaPomodori } from '../../../../mp-classi/app/struttura-pomodoro';
+import { ITimer } from '../../../../mp-classi/app/timer';
 
 
 @Component({
@@ -9,103 +9,7 @@ import { SessioneStudio } from '../utility';
   templateUrl: './sessione-studio.component.html',
   styleUrls: ['./sessione-studio.component.css']
 })
-export class SessioneStudioComponent implements OnInit, ISessioneStudio {
-
-  /* ISessioneStudio */
-  strutturaPomodoro: StrutturaPomodori = undefined; // { studio: 25, riposo: 5, tipologia: 'I' };
-  dataInizio: Date;
-  dataFine: Date;
-  titolo: string = '';
-  commentoConciso: string = '';
-
-  /* utility */
-
-
-  timerInterno: ITimer = {
-    statoTimer: false,
-    timer: '00:00:00',
-    count: 0,
-    numeroCicli: 0,
-    dataInizio: new Date(),
-    terminato: false, 
-    dataFine:undefined
-  };
-
-  constructor() { }
-
-  Test(item: any) {
-    console.log(item);
-  }
-
-  ngOnInit(): void {
-  }
-  @Output() onModificaSessioneStudio = new EventEmitter<ISessioneStudio>();
-  settato = false;
-  @Input()
-  set SettaComponente(v: ISessioneStudio) {
-    console.log('sono in input !!!');
-    if (v) {
-      if (this.settato) {
-        this.onModificaSessioneStudio.emit(new SessioneStudio(this));
-        this.Azzera();
-        setTimeout((item: ISessioneStudio) => {
-          //this.SettaPiano(item);
-          this.Setta(item)
-        }, 100, v);
-      }
-      else {
-        this.Setta(v);
-      }
-    }
-  }
-  
-  Setta(item: ISessioneStudio):boolean {
-    this.dataInizio = item.dataInizio ?? new Date();
-    this.strutturaPomodoro = item.strutturaPomodoro ?? undefined;
-    this.titolo = item.titolo ?? '';
-
-    this.commentoConciso = item.commentoConciso ?? '';
-
-    this.timerInterno = item.timerInterno;
-    this.dataFine = item.dataFine;
-    return true;
-  }
-  Azzera(){    
-    this.dataInizio =  new Date();
-    this.strutturaPomodoro = undefined;
-    this.titolo = '';
-
-    this.commentoConciso = '';
-
-    this.timerInterno =undefined;
-    this.dataFine = undefined;
-  }
-  StrutturaPomodotoToString(item: StrutturaPomodori): string {
-    if (item && 'tipologia' in item) {
-      switch (item.tipologia) {
-        case 'I':
-          return 'I';
-        case 'II':
-          return 'II';
-        case 'III':
-          return 'III';
-        default:
-          return 'default';
-          break;
-      }
-    }
-    else {
-      return 'undefined';
-    }
-  }
-  IntercettaFineTimer(item: ITimer) {
-    this.dataFine = new Date();
-    this.timerInterno = item;
-    const tmp = new SessioneStudio(this);
-    this.onFineSessione.emit(tmp/* this */);
-  }
-
-  @Output() onFineSessione = new EventEmitter<ISessioneStudio>();
+export class SessioneStudioComponent extends SessioneStudio implements OnInit, ISessioneStudio {
 
   GetIsDisability(item: boolean) {
     if (item) {
@@ -140,6 +44,64 @@ export class SessioneStudioComponent implements OnInit, ISessioneStudio {
   }
   SetCommentoConciso(item: any) {
     this.commentoConciso = item.srcElement.value; //event.srcElment.value
+  }
+  settato = false;
+  @Output() onModificaSessioneStudio = new EventEmitter<ISessioneStudio>();
+  @Output() onFineSessione = new EventEmitter<ISessioneStudio>();
+  @Input()
+  set SettaComponente(v: ISessioneStudio) {
+    console.log('sono in input !!!');
+    if (v) {
+      if (this.settato) {
+        this.onModificaSessioneStudio.emit(new SessioneStudio(this));
+        this.Azzera();
+        setTimeout((item: ISessioneStudio) => {
+          //this.SettaPiano(item);
+          this.Setta(item)
+        }, 100, v);
+      }
+      else {
+        this.Setta(v);
+      }
+    }
+  }
+
+  constructor() { super(); }
+
+  ngOnInit(): void {
+  }
+
+  Test(item: any) {
+    console.log(item);
+  }
+  Azzera() {
+    this.dataInizio = new Date();
+    this.strutturaPomodoro = undefined;
+    this.titolo = '';
+
+    this.commentoConciso = '';
+
+    this.timerInterno = undefined;
+    this.dataFine = undefined;
+  }
+  StrutturaPomodotoToString(item: StrutturaPomodori): string {
+    if (item && 'tipologia' in item) {
+      switch (item.tipologia) {
+        case 'I': return 'I';
+        case 'II': return 'II';
+        case 'III': return 'III';
+        default: return 'default';
+      }
+    }
+    else {
+      return 'undefined';
+    }
+  }
+  IntercettaFineTimer(item: ITimer) {
+    this.dataFine = new Date();
+    this.timerInterno = item;
+    const tmp = new SessioneStudio(this);
+    this.onFineSessione.emit(tmp/* this */);
   }
   async Salva() {
     const tmp = new SessioneStudio();

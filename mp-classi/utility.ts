@@ -1,14 +1,7 @@
 
 
-/* class PianoStudio {
-    constructor(parameters) {
-        
-    }
-} */
-
-import { Tracing } from "trace_events";
-
-export interface IArray<T> {
-
-    vettorePianoStudio: Array<IPianoStudio>;
+export interface IInterazioneVettoriale<T> {
+    nuovoElemento: T,
+    elementoSelezionato: T
+    indice:number
 }

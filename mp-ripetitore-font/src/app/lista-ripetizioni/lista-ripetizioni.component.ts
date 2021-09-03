@@ -1,24 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IListaRipetizioni, IRipetizioneStudio } from '../../../../mp-classi/utility';
-import { formataDate, IInterazioneVettoriale, RipetizioneStudio } from '../utility';
+import { IListaRipetizioni, ListaRipetizioni } from '../../../../mp-classi/app/lista-piani-ripetizioni';
+import { IPianoRipetizione, RipetizioneStudio } from '../../../../mp-classi/app/piano-ripetizione';
+import { formataDate } from '../utility';
 
 @Component({
   selector: 'app-lista-ripetizioni',
   templateUrl: './lista-ripetizioni.component.html',
   styleUrls: ['./lista-ripetizioni.component.css']
 })
-export class ListaRipetizioniComponent implements OnInit, IInterazioneVettoriale<IRipetizioneStudio>,
-  IListaRipetizioni {
-
-  nuovoElemento: IRipetizioneStudio = undefined;
-  elementoSelezionato: IRipetizioneStudio = undefined;
-  elementoTmp: IRipetizioneStudio = undefined;
-
-  vettoreRipetizioniStudio: Array<IRipetizioneStudio> = new Array<RipetizioneStudio>();
+export class ListaRipetizioniComponent extends ListaRipetizioni implements OnInit, IListaRipetizioni {
 
   switch = false;
 
-  constructor() { }
+  constructor() { super(); }
 
   @Input()
   set SettaComponente(v: IListaRipetizioni) {
@@ -39,7 +33,7 @@ export class ListaRipetizioniComponent implements OnInit, IInterazioneVettoriale
   }
   Setta(item: IListaRipetizioni) {
     //this.listaPianiStudio = new ListaPianiStudio();
-    this.vettoreRipetizioniStudio = new Array<IRipetizioneStudio>();
+    this.vettoreRipetizioniStudio = new Array<IPianoRipetizione>();
     for (let index = 0; index < item.vettoreRipetizioniStudio.length; index++) {
       const element = item.vettoreRipetizioniStudio[index];
       //this.listaPianiStudio.AggiungiNuovoPiano(element);
@@ -49,36 +43,39 @@ export class ListaRipetizioniComponent implements OnInit, IInterazioneVettoriale
   }
   ngOnInit(): void {
   }
-  
-  @Output() onAggiungiRipetizioneStudio = new EventEmitter<IRipetizioneStudio>();
-  AggiungiNuovoRipetizione(item?: IRipetizioneStudio): boolean {
-    this.nuovoElemento.timerInterno.dataFine = undefined;
-    if (item == undefined) item = this.nuovoElemento;
-    /* try {
-      const tmp = await superagent.post('localhost:8080/api/ListaPianiStudio/AggiungiNuovoPiano')
-        .send(item);
-    } catch (error) {
-      console.log(error);
-    } */
+
+  @Output() onAggiungiRipetizioneStudio = new EventEmitter<IPianoRipetizione>();
+  async AggiungiNuovoRipetizione(item?: IPianoRipetizione) {
     try {
-      const tmp = new RipetizioneStudio(item);
-      this.vettoreRipetizioniStudio.push(tmp);
-      this.onAggiungiRipetizioneStudio.emit(tmp);
-      this.nuovoElemento = new RipetizioneStudio();
-      this.nuovoElemento.timerInterno.terminato = false;
-      (<any>document.getElementById('pomodoroselezionato')).selectedIndex = 0;
-      return true;
+      if (item != undefined) {
+        const tmp = await super.AggiungiNuovoRipetizione(item);
+        /*  try {
+           const tmp = await superagent.post('localhost:8080/api/ListaPianiStudio/AggiungiNuovoPiano')
+             .send(item);
+         } catch (error) {
+           console.log(error);
+         } */
+        this.onAggiungiRipetizioneStudio.emit(tmp);
+        (<any>document.getElementById('pomodoroselezionato')).selectedIndex = 0;
+        return tmp;
+      }
     } catch (error) {
-      console.log(error);
-      return false;
+      return error;
     }
   }
-  ModificaRipetizione() {
-    return true;
-  }
-  @Output() onSelezionaRipetizioneStudio = new EventEmitter<{ piano: IRipetizioneStudio, index: number }>();
+  async ModificaRipetizione(index: number, item: IPianoRipetizione) {
 
-  SelezionaRipetizioneStudio(item: IRipetizioneStudio, index?: number) {
+    /* try {
+      const tmp = await superagent.post('localhost:8080/api/ListaPianiStudio/ModificaPiano')
+        .send(item);
+    } catch (error) {
+      console.log(error); 
+    }*/
+    return await super.ModificaRipetizione(index, item);
+  }
+  @Output() onSelezionaRipetizioneStudio = new EventEmitter<{ piano: IPianoRipetizione, index: number }>();
+
+  SelezionaRipetizioneStudio(item: IPianoRipetizione, index?: number) {
     console.log('seleziono');
     //this.elementoSelezionato.Setta(item);
     this.elementoSelezionato = item;
@@ -87,7 +84,7 @@ export class ListaRipetizioniComponent implements OnInit, IInterazioneVettoriale
       piano: item
     });
   }
-  
+
   public SetDataInizio(v: any) {
     this.nuovoElemento.dataInizio = new Date(Date.parse(v));
   }

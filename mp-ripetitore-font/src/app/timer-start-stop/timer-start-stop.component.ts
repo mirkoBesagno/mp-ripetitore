@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ITimer } from '../../../../mp-classi/utility';
+import { ITimer } from '../../../../mp-classi/app/timer';
 
 @Component({
   selector: 'app-timer-start-stop',

@@ -12,7 +12,7 @@ export interface ISessioneStudio {
 
     timerInterno: ITimer,
 
-    Setta(item: ISessioneStudio): boolean | Promise<boolean>;
+    Setta(item?: ISessioneStudio): boolean | Promise<boolean>;
 }
 
 
@@ -41,15 +41,34 @@ export class SessioneStudio implements ISessioneStudio {
             this.Setta(item);
         }
     }
-    Setta(item: ISessioneStudio) {
-        this.dataInizio = item.dataInizio ?? new Date();
-        this.strutturaPomodoro = item.strutturaPomodoro ?? undefined;
-        this.titolo = item.titolo ?? '';
+    Setta(item?: ISessioneStudio) {
+        if (item != undefined) {
+            this.dataInizio = item.dataInizio ?? new Date();
+            this.strutturaPomodoro = item.strutturaPomodoro ?? undefined;
+            this.titolo = item.titolo ?? '';
 
-        this.commentoConciso = item.commentoConciso ?? '';
+            this.commentoConciso = item.commentoConciso ?? '';
 
-        this.timerInterno = item.timerInterno;
-        this.dataFine = item.dataFine;
+            this.timerInterno = <ITimer>item.timerInterno ?? <ITimer>{
+                count: 0, numeroCicli: 0, timer: '00:00:00', statoTimer: false,
+                dataInizio: new Date(), terminato: false
+            };
+            this.dataFine = item.dataFine;
+        }
+        else {
+
+            this.dataInizio = new Date();
+            this.strutturaPomodoro = undefined;
+            this.titolo = '';
+
+            this.commentoConciso = '';
+
+            this.timerInterno = <ITimer>{
+                count: 0, numeroCicli: 0, timer: '00:00:00', statoTimer: false,
+                dataInizio: new Date(), terminato: false
+            };
+            this.dataFine = new Date();
+        }
         return true;
     }
 }

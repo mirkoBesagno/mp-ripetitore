@@ -1,7 +1,12 @@
 import { Component, Directive, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { IListaSessioniStudio, ListaSessioniStudio } from '../../../../mp-classi/app/lista-sessioni-studio';
+import { IPianoStudio, PianoStudio } from '../../../../mp-classi/app/piano-studio';
+import { ISessioneStudio, SessioneStudio } from '../../../../mp-classi/app/sessione-studio';
+import { StrutturaPomodori } from '../../../../mp-classi/app/struttura-pomodoro';
+import { ITimer } from '../../../../mp-classi/app/timer';
+import { IInterazioneVettoriale } from '../../../../mp-classi/utility';
+import { formataDate } from '../utility';
 
-import { ISessioneStudio, StrutturaPomodori, IPianoStudio, ITimer, IListaSessioniStudio } from '../../../../mp-classi/utility';
-import { formataDate, IInterazioneVettoriale, ListaSessioniStudio, PianoStudio } from '../utility';
 
 
 @Component({
@@ -9,39 +14,23 @@ import { formataDate, IInterazioneVettoriale, ListaSessioniStudio, PianoStudio }
   templateUrl: './piano-studio.component.html',
   styleUrls: ['./piano-studio.component.css']
 })
-export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneVettoriale<ISessioneStudio> {
+export class PianoStudioComponent extends PianoStudio
+  implements OnInit, IPianoStudio {
 
-  timerInterno: ITimer = {
-    statoTimer: false,
-    timer: '00:00:00',
-    count: 0,
-    numeroCicli: -1,
-    dataInizio: new Date(),
-    terminato: false,
-    dataFine: undefined
-  };
+  settato = false;
 
-
-  dataInizio: Date = new Date(Date.now());
-
-  listaSessioniStudio: IListaSessioniStudio = new ListaSessioniStudio();
-
+  mostra_nascondi_aggiungiSessione = false;
+  mostra_nascondi_terminaSessione = false;
+  
   public get GetListaSessioniStudio(): IListaSessioniStudio {
     return this.listaSessioniStudio;
   }
-
-
-  listaParoleChiavi?: string[];
-
-  titoloOpera: string = ''; //sarebbe piu corretto libro
   public get TitoloOpera(): string {
     return this.titoloOpera;
   }
   public set TitoloOpera(v: string) {
     this.titoloOpera = v;
   }
-
-  titoloGenerale: string = '';
   public set TitoloGenerale(v: string) {
     this.titoloGenerale = v;
   }
@@ -49,21 +38,34 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     return this.titoloGenerale;
   }
 
-  sessioniAperte: boolean = false;
-
-  dataFine?: Date;
-
-  nuovoElemento: ISessioneStudio = undefined;
-  elementoSelezionato: ISessioneStudio = undefined;
-  indice = 0;
-  indiceTmp = 0;
-  public set Indice(v: number) {
-    this.indiceTmp = this.indice;
-    this.indice = v;
+  @Output() onFinePiano = new EventEmitter<IPianoStudio>();
+  @Output() onModificaPianoStudio = new EventEmitter<IPianoStudio>();
+  @Input()
+  set SettaComponente(v: IPianoStudio) {
+    console.log('sono in input !!!');
+    this.elementoSelezionato = undefined;
+    this.nuovoElemento = undefined;
+    this.listaSessioniStudio = undefined;
+    this.timerInterno = undefined;
+    if (v) {
+      setTimeout(async () => {
+        if (this.settato) {
+          await this.Setta(v);/* .finally(() => {
+            this.onModificaPianoStudio.emit(new PianoStudio(this));
+          }); */
+        }
+        else {
+          await this.Setta(v);
+        }
+      });
+    }
   }
-
-  settato = false;
-
+  async Setta(item: IPianoStudio) {
+    this.mostra_nascondi_aggiungiSessione = false;
+    this.mostra_nascondi_terminaSessione = false;
+    const tmp = await super.Setta(item);
+    return true;
+  }
   public SetDataInizio(v: any) {
     this.dataInizio = new Date(Date.parse(v));
   }
@@ -75,8 +77,9 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     let tmp = formataDate(this.dataFine.toDateString());
     return tmp;
   }
+
   constructor() {
-    this.dataInizio = new Date();
+    super();
   }
 
   /* altezza = 0;
@@ -95,17 +98,12 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
     this.nuovoElemento = undefined;
     this.nuovoElemento = tmp;
   }
-  async AggiungiSessione() {
+  async AggiungiSessione(item?: ISessioneStudio) {
     try {
-      await this.listaSessioniStudio.AggiungiNuovaSessione(this.nuovoElemento);
-      this.nuovoElemento = <ISessioneStudio>{
-        dataInizio: new Date(), strutturaPomodoro: undefined,
-        timerInterno: {
-          count: 0, numeroCicli: 0, timer: undefined, statoTimer: false, dataInizio: new Date(), terminato: false
-        }
-      };
+      await super.AggiungiSessione(item);
+      //await this.listaSessioniStudio.AggiungiNuovaSessione(this.nuovoElemento);
+      this.nuovoElemento = new SessioneStudio();
       (<any>document.getElementById('pomodoroselezionato')).selectedIndex = 0;
-
       this.mostra_nascondi_aggiungiSessione = false;
       return true;
     } catch (error) {
@@ -113,52 +111,12 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
       return false;
     }
   }
-  SelezionaPomodoro(item: any) {
-    if (this.nuovoElemento == undefined) this.nuovoElemento = <ISessioneStudio>{
-      dataInizio: new Date(), strutturaPomodoro: undefined,
-      timerInterno: {
-        count: 0, numeroCicli: 0, timer: undefined, statoTimer: false,
-        dataInizio: new Date(), terminato: false
-      }
-    };
-    switch (item.srcElement.value) {
-      case 'I':
-        this.nuovoElemento.strutturaPomodoro = <StrutturaPomodori>{
-          tipologia: "I",
-          struttura: [25, 5],
-          count: 2
-        };
-        break;
-      case 'II':
-        this.nuovoElemento.strutturaPomodoro = <StrutturaPomodori>{
-          tipologia: "II", struttura: [20, 5, 20, 5],
-          count: 4
-        };
-        break;
-      case 'III':
-        this.nuovoElemento.strutturaPomodoro = <StrutturaPomodori>{
-          tipologia: "III",
-          struttura: [50, 10, 50, 10],
-          count: 4
-        };
-        break;
-      default:
-        break;
+  async SelezionaPomodoro(item: any) {
+    if (this.nuovoElemento == undefined) {
+      this.nuovoElemento = new SessioneStudio();
+      await this.nuovoElemento.Setta();
     }
-    this.nuovoElemento.timerInterno.numeroCicli = this.nuovoElemento.strutturaPomodoro.count ?? 0;
-  }
-  SchegliNuovoSelezionata(evt, cityName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.className += " active";
+    super.listaSessioniStudio.SettaTimerNuovoElementoConPomodoro(item.srcElement.value);
   }
   SelezionaSessioneStudio(item: {
     piano: ISessioneStudio,
@@ -190,108 +148,50 @@ export class PianoStudioComponent implements OnInit, IPianoStudio, IInterazioneV
   }
   async IntercettaFineSessione(item: ISessioneStudio) {
     console.log(item);
-    /* this.elementoSelezionato.dataFine = item.dataFine;
-    this.elementoSelezionato.titolo = item.titolo;
-    this.elementoSelezionato.commentoConciso = item.commentoConciso; */
-    //this.elementoSelezionato = item;
-
-    //await this.listaSessioniStudio.ModificaSessione(this.indice,item);
-
     await this.elementoSelezionato.Setta(item);
     await this.listaSessioniStudio.ModificaSessione(this.indice, item);
     await this.Salva();
   }
-
-  mostra_nascondi_aggiungiSessione = false;
-  mostra_nascondi_terminaSessione = false;
-
   onClickMenu(item: any) {
     /* item.querySelector(".nested").classList.toggle("active");
     item.toggle("caret-down"); */
   }
-
-  ClickAggiungiSessione(item: any) {
-    console.log("ciao");
-
-  }
   IntercettaFineTimer(item: ITimer) {
     this.dataFine = new Date();
     this.timerInterno = item;
-    this.onFinePiano.emit(new PianoStudio(this));
+    const tmp = new PianoStudio();
+    tmp.Setta(this);
+    this.onFinePiano.emit(tmp);
   }
-
-  @Output() onFinePiano = new EventEmitter<IPianoStudio>();
-
-  @Output() onModificaPianoStudio = new EventEmitter<IPianoStudio>();
-
-  async Setta(item: IPianoStudio) {
-    this.mostra_nascondi_aggiungiSessione = false;
-    this.mostra_nascondi_terminaSessione = false;
-    this.dataFine = item.dataFine;
-    this.dataInizio = item.dataInizio;
-    this.listaParoleChiavi = item.listaParoleChiavi;
-    const tmp = new ListaSessioniStudio();
-    await tmp.Setta(item.listaSessioniStudio);
-    this.listaSessioniStudio = tmp;
-    this.timerInterno = item.timerInterno ?? { count: 0, dataInizio: new Date(), dataFine: undefined, numeroCicli: 0, statoTimer: false, terminato: false, timer: '00:00:00' };
-    this.titoloOpera = item.titoloOpera;
-    this.titoloGenerale = item.titoloGenerale;
-
-    if (this.dataFine != undefined && this.timerInterno.numeroCicli != -1 && this.timerInterno.terminato == false) this.timerInterno.terminato = true;
-    return true;
-  }
-
-  @Input()
-  set SettaComponente(v: IPianoStudio) {
-    console.log('sono in input !!!');
-    this.elementoSelezionato = undefined;
-    this.nuovoElemento = undefined;
-    this.listaSessioniStudio = undefined;
-    this.timerInterno = undefined;
-    if (v) {
-      setTimeout(async () => {
-        if (this.settato) {
-          await this.Setta(v);/* .finally(() => {
-          this.onModificaPianoStudio.emit(new PianoStudio(this));
-        }); */
-        }
-        else {
-          await this.Setta(v);
-        }
-      });
-
-    }
-
-    /* tmp.height = this.altezza;
-    tmp.scrollWidth = this.larghezza; */
-  }
-  /* SettaPiano(v: IPianoStudio) {
-    this.dataInizio = v.dataInizio ?? new Date();
-    this.dataFine = v.dataFine ?? undefined;
-    this.listaParoleChiavi = v.listaParoleChiavi ?? [];
-    this.listaSessioniStudio = v.listaSessioniStudio ?? undefined;
-    this.timerInterno = v.timerInterno ?? {
-      statoTimer: false,
-      timer: '00:00:00',
-      count: 0,
-      numeroCicli: -1,
-      dataInizio: new Date(),
-      terminato: false
-    };
-    this.titoloOpera = v.titoloOpera ?? '';
-    this.titoloGenerale = v.titoloGenerale ?? '';
-    this.settato = true;
-    if (this.dataFine != undefined) {
-      this.timerInterno.terminato = true;
-    }
-  } */
   async Salva() {
     const tmp = new PianoStudio();
     await tmp.Setta(this);
+    
+    this.elementoModificato = {
+      index: this.indice,
+      sessioneStudio: this.elementoSelezionato
+    }
     this.onFinePiano.emit(tmp);
   }
+  
+  elementoModificato: { sessioneStudio: ISessioneStudio, index: number };
   async ClickFineSessione() {
     this.dataFine = new Date();
     await this.Salva();
+  }
+
+
+  SchegliNuovoSelezionata(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
   }
 }

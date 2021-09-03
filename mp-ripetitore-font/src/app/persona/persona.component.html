@@ -3,7 +3,8 @@
         <div style="height: 50%; width: 100%; overflow: scroll;">
             <div *ngIf='listaPianiStudio != undefined'>
                 <app-lista-piani-di-studio (onSelezionaPianoStudio)='SelezionaPianoStudio($event)'
-                    [SettaComponente]='listaPianiStudio' [ModificaElementoSpecifico]='elementoModificato'></app-lista-piani-di-studio>
+                    (onAggiungiPianoStudio)='AggiungiPianoStudio($event)' [SettaComponente]='listaPianiStudio'
+                    [ModificaElementoSpecifico]='elementoModificato'></app-lista-piani-di-studio>
             </div>
             <div *ngIf='listaPianiStudio == undefined'>
                 <label for="">listaPianiStudio indefinita</label>
@@ -18,19 +19,6 @@
             <div *ngIf='listaRipetizioni == undefined'>
                 <label for="">listaRipetizioniStudio indefinita</label>
             </div>
-            <!-- <label for="">Lista ripetizioni</label>
-            <div>
-                <ul style="padding: 11px;">
-                    <li>ddddd</li>
-                    <li>dddasdsff</li>
-                    <li>ddddd</li>
-                    <li>dddasdsff</li>
-                    <li>ddddd</li>
-                    <li>dddasdsff</li>
-                    <li>ddddd</li>
-                    <li>dddasdsff</li>
-                </ul>
-            </div> -->
         </div>
     </div>
     <div class="listaPianiStudioMain">
